@@ -1,0 +1,23 @@
+{
+  "name": "intent-runtime-backend",
+  "version": "1.0.0",
+  "description": "Backend for Intent Runtime",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "fastify": "^4.26.2",
+    "mongoose": "^8.2.1",
+    "dotenv": "^16.4.5",
+    "@fastify/cors": "^9.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.11.24",
+    "nodemon": "^3.1.0"
+  }
+}
