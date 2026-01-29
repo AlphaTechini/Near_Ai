@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { wallet, accountId } from '$lib/near';
-  import { onMount } from 'svelte';
+  import { accountId, signMessage, network } from '$lib/near';
 
   let amount = "1";
   let tokenIn = "NEAR";
@@ -10,7 +9,7 @@
   let status = "";
 
   async function signAndSubmit() {
-    if (!$wallet || !$accountId) {
+    if (!$accountId) {
       status = "Please connect wallet first.";
       return;
     }
@@ -29,19 +28,20 @@
         timestamp: Date.now()
       };
 
-      // 2. Request Signature from Wallet (using signMessage if supported, or generic)
-      // Note: my-near-wallet supports signMessage regarding NEP-0413
+      // 2. Request Signature from Wallet (NEP-413)
+      const contractId = $network === 'mainnet' ? 'intent-runtime.near' : 'intent-runtime.testnet';
       const message = JSON.stringify(intent);
-      const signature = await $wallet.signMessage({ message, recipient: "intent-runtime.testnet", nonce: Buffer.from(Date.now().toString()) });
+      const signature = await signMessage(message, contractId);
 
       // 3. Send to Backend
       status = "Submitting to Agent...";
-      const res = await fetch('http://localhost:3000/intents', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const res = await fetch(`${apiUrl}/intents`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...intent,
-          authorizationSignature: JSON.stringify(signature) // Store the full signature object/string
+          authorizationSignature: JSON.stringify(signature)
         })
       });
 

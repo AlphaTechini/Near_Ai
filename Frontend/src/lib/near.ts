@@ -1,62 +1,136 @@
-import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import type { WalletSelector, Wallet as WalletType } from "@near-wallet-selector/core";
+import { NearConnector } from "@hot-labs/near-connect";
 import { writable } from "svelte/store";
 
-export const walletSelector = writable<WalletSelector | null>(null);
-export const wallet = writable<WalletType | null>(null);
+// Stores for reactive state
+export const connector = writable<NearConnector | null>(null);
 export const accountId = writable<string | null>(null);
+export const isConnected = writable<boolean>(false);
+export const network = writable<"testnet" | "mainnet">("testnet");
 
+let nearConnector: NearConnector | null = null;
+
+/**
+ * Get the network based on environment
+ */
+function getNetwork(): "testnet" | "mainnet" {
+    // Check for environment variable or default to testnet
+    if (typeof window !== 'undefined') {
+        const isProd = window.location.hostname !== 'localhost' &&
+            !window.location.hostname.includes('127.0.0.1');
+        return isProd ? "mainnet" : "testnet";
+    }
+    return "testnet";
+}
+
+/**
+ * Initialize the NEAR wallet connector
+ * Uses @hot-labs/near-connect which provides a dynamic wallet selector
+ * supporting: HOT Wallet, MyNearWallet, Meteor Wallet, Intear, OKX, NEAR Mobile
+ */
 export const initNear = async () => {
     try {
-        const selector = await setupWalletSelector({
-            network: "testnet",
-            modules: [setupMyNearWallet()],
+        const currentNetwork = getNetwork();
+        network.set(currentNetwork);
+
+        nearConnector = new NearConnector({
+            network: currentNetwork,
+            // The manifest is automatically loaded in production
+            // It includes all popular wallets: HOT, MyNearWallet, Meteor, Intear, OKX, NEAR Mobile
         });
 
-        walletSelector.set(selector);
+        // Subscribe to sign-in events
+        nearConnector.on("wallet:signIn", async (event) => {
+            console.log("[NEAR] Signed in:", event);
+            if (event.accounts && event.accounts.length > 0) {
+                accountId.set(event.accounts[0].accountId);
+                isConnected.set(true);
+            }
+        });
 
-        if (selector.isSignedIn()) {
-            const state = selector.store.getState();
-            const account = state.accounts[0];
-            accountId.set(account?.accountId || null);
+        // Subscribe to sign-out events
+        nearConnector.on("wallet:signOut", async () => {
+            console.log("[NEAR] Signed out");
+            accountId.set(null);
+            isConnected.set(false);
+        });
 
-            const walletInstance = await selector.wallet();
-            wallet.set(walletInstance);
+        connector.set(nearConnector);
+
+        // Check if already connected (restore session)
+        const accounts = await nearConnector.getAccounts();
+        if (accounts && accounts.length > 0) {
+            accountId.set(accounts[0].accountId);
+            isConnected.set(true);
         }
 
-        return selector;
+        console.log(`[NEAR] Initialized on ${currentNetwork}`);
+        return nearConnector;
     } catch (error) {
-        console.error("Failed to initialize NEAR:", error);
+        console.error("[NEAR] Failed to initialize:", error);
         return null;
     }
 };
 
+/**
+ * Open the wallet selector modal
+ * Shows all available wallets: HOT Wallet, MyNearWallet, Meteor, Intear, OKX, NEAR Mobile
+ */
 export const signIn = async () => {
-    const selector = await new Promise<WalletSelector | null>(resolve => {
-        walletSelector.subscribe(resolve)();
-    });
+    if (!nearConnector) {
+        console.error("[NEAR] Connector not initialized");
+        return;
+    }
 
-    if (!selector) return;
-
-    const modal = setupMyNearWallet(); // This part is tricky without the UI modal package. 
-    // Actually, for a custom UI or simple integration, we usually use @near-wallet-selector/modal-ui
-    // But to keep it simple and dependency-light, we can just invoke the wallet directly if we know which one.
-    // Let's use the wallet instance directly if possible or the modal-ui if requested.
-    // For now, let's assume we want to trigger the MyNearWallet flow.
-
-    const walletInstance = await selector.wallet("my-near-wallet");
-    await walletInstance.signIn({ contractId: "intent-runtime.testnet" });
+    try {
+        // This opens the wallet selection modal
+        await nearConnector.connect();
+    } catch (error) {
+        console.error("[NEAR] Sign in failed:", error);
+    }
 };
 
+/**
+ * Sign out from the current wallet
+ */
 export const signOut = async () => {
-    const walletInstance = await new Promise<WalletType | null>(resolve => {
-        wallet.subscribe(resolve)();
-    });
-    if (walletInstance) {
-        await walletInstance.signOut();
-        accountId.set(null);
-        wallet.set(null);
-        window.location.reload();
+    if (!nearConnector) {
+        console.error("[NEAR] Connector not initialized");
+        return;
     }
+
+    try {
+        await nearConnector.disconnect();
+        accountId.set(null);
+        isConnected.set(false);
+    } catch (error) {
+        console.error("[NEAR] Sign out failed:", error);
+    }
+};
+
+/**
+ * Get the current wallet instance for signing transactions
+ */
+export const getWallet = async () => {
+    if (!nearConnector) return null;
+    return nearConnector.wallet();
+};
+
+/**
+ * Sign a message using NEP-413
+ */
+export const signMessage = async (message: string, recipient: string) => {
+    if (!nearConnector) {
+        throw new Error("Connector not initialized");
+    }
+
+    const wallet = await nearConnector.wallet();
+    if (!wallet) {
+        throw new Error("No wallet connected");
+    }
+
+    return wallet.signMessage({
+        message,
+        recipient,
+        nonce: Buffer.from(Date.now().toString()),
+    });
 };

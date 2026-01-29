@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { initNear, accountId, wallet } from '$lib/near';
+  import { initNear, accountId, isConnected, getWallet } from '$lib/near';
   import ChatSidebar from '../../components/ChatSidebar.svelte';
   import ChatMessage from '../../components/ChatMessage.svelte';
   
@@ -17,7 +17,7 @@
   let activeConversationId = '';
   let showSidebar = false;
   
-  const API_URL = 'http://localhost:3000';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   
   const examplePrompts = [
     "Swap 10 NEAR to USDC in 30 minutes",
@@ -52,7 +52,7 @@ Would you like me to create this intent? Reply "yes" to proceed.`;
     
     if (lowerMsg.includes('yes') || lowerMsg.includes('proceed') || lowerMsg.includes('confirm')) {
       // Create the intent
-      if ($accountId && $wallet) {
+      if ($accountId && $isConnected) {
         try {
           const intent = {
             user: $accountId,

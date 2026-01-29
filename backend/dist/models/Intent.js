@@ -43,6 +43,8 @@ const IntentSchema = new mongoose_1.Schema({
     status: { type: String, enum: ['pending', 'executed', 'failed', 'expired'], default: 'pending' },
     createdAt: { type: Date, default: Date.now },
     executeAt: { type: Date },
-    condition: { type: mongoose_1.Schema.Types.Mixed }
+    condition: { type: mongoose_1.Schema.Types.Mixed },
+    txHash: { type: String },
+    network: { type: String, enum: ['testnet', 'mainnet'] },
 });
 exports.default = mongoose_1.default.model('Intent', IntentSchema);
