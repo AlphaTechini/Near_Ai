@@ -4,8 +4,12 @@ import connectDB from './db';
 import dotenv from 'dotenv';
 import intentRoutes from './routes/intents';
 import watcher from './services/watcher';
+import { nearAiService } from './services/nearAiService';
 
 dotenv.config();
+
+// Initialize NEAR AI Cloud (TEE-secured inference)
+nearAiService.initialize();
 
 const app: FastifyInstance = Fastify({
   logger: true

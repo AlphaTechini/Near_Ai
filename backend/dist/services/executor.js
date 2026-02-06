@@ -8,25 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Executor = void 0;
-const nearWallet_1 = __importDefault(require("./nearWallet"));
+const intentSolver_1 = require("./intentSolver");
 const near_1 = require("../config/near");
 class Executor {
     /**
-     * Initialize the executor (connects to NEAR)
+     * Initialize the executor (connects to NEAR via IntentSolver)
      */
     static initialize() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.initialized)
                 return;
             try {
-                yield nearWallet_1.default.initialize();
+                yield intentSolver_1.intentSolverService.initialize();
                 this.initialized = true;
-                console.log('[Executor] Initialized with NEAR wallet service');
+                console.log('[Executor] Initialized with Intent Solver Service');
             }
             catch (error) {
                 console.error('[Executor] Failed to initialize:', error);
@@ -35,28 +32,19 @@ class Executor {
         });
     }
     /**
-     * Execute an intent by performing the appropriate NEAR transaction
+     * Execute an intent by delegating to the Intent Solver
      */
     static execute(intent) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`[Executor] Executing intent ${intent._id} for user ${intent.user}...`);
+            console.log(`[Executor] Processing intent ${intent._id} for user ${intent.user}...`);
             console.log(`[Executor] Action: ${intent.action}, Network: ${(0, near_1.getNetworkId)()}`);
             try {
                 // Ensure we're initialized
                 if (!this.initialized) {
                     yield this.initialize();
                 }
-                let result;
-                switch (intent.action) {
-                    case 'transfer':
-                        result = yield this.executeTransfer(intent);
-                        break;
-                    case 'swap':
-                        result = yield this.executeSwap(intent);
-                        break;
-                    default:
-                        throw new Error(`Unknown action type: ${intent.action}`);
-                }
+                // Delegate execution to the Intent Solver (which handles Testnet vs Mainnet logic)
+                const result = yield intentSolver_1.intentSolverService.solve(intent);
                 if (result.success) {
                     intent.status = 'executed';
                     intent.txHash = result.txHash;
@@ -74,38 +62,6 @@ class Executor {
                 intent.network = (0, near_1.getNetworkId)();
                 yield intent.save();
             }
-        });
-    }
-    /**
-     * Execute a NEAR transfer
-     */
-    static executeTransfer(intent) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const params = intent.params;
-            if (!params.recipient || !params.amount) {
-                throw new Error('Transfer requires recipient and amount in params');
-            }
-            return nearWallet_1.default.transfer({
-                recipient: params.recipient,
-                amount: params.amount,
-            });
-        });
-    }
-    /**
-     * Execute a token swap
-     */
-    static executeSwap(intent) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const params = intent.params;
-            if (!params.tokenIn || !params.tokenOut || !params.amount) {
-                throw new Error('Swap requires tokenIn, tokenOut, and amount in params');
-            }
-            return nearWallet_1.default.swap({
-                tokenIn: params.tokenIn,
-                tokenOut: params.tokenOut,
-                amount: params.amount,
-                slippage: params.slippage,
-            });
         });
     }
 }

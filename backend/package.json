@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
+    "@neardefi/shade-agent-js": "^1.0.4",
     "bn.js": "^5.2.2",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "mongoose": "^8.2.1",
-    "near-api-js": "^7.0.4"
+    "near-api-js": "^6.0.0",
+    "openai": "^6.18.0"
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",

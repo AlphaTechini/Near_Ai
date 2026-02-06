@@ -18,7 +18,10 @@ const db_1 = __importDefault(require("./db"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const intents_1 = __importDefault(require("./routes/intents"));
 const watcher_1 = __importDefault(require("./services/watcher"));
+const nearAiService_1 = require("./services/nearAiService");
 dotenv_1.default.config();
+// Initialize NEAR AI Cloud (TEE-secured inference)
+nearAiService_1.nearAiService.initialize();
 const app = (0, fastify_1.default)({
     logger: true
 });

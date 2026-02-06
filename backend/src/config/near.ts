@@ -1,4 +1,4 @@
-import { connect, keyStores, KeyPair, Near, ConnectConfig } from 'near-api-js';
+import { connect, Near, keyStores, utils } from 'near-api-js';
 
 export interface NearConfig {
     networkId: string;
@@ -37,7 +37,6 @@ export async function initNearConnection(): Promise<Near> {
     const config = getNearConfig();
     const keyStore = new keyStores.InMemoryKeyStore();
 
-    // Load the executor account's private key from environment
     const accountId = process.env.NEAR_ACCOUNT_ID;
     const privateKey = process.env.NEAR_PRIVATE_KEY;
 
@@ -45,17 +44,15 @@ export async function initNearConnection(): Promise<Near> {
         throw new Error('NEAR_ACCOUNT_ID and NEAR_PRIVATE_KEY must be set in environment');
     }
 
-    // Add the key to the keystore
-    const keyPair = KeyPair.fromString(privateKey);
+    const keyPair = utils.KeyPair.fromString(privateKey as any);
     await keyStore.setKey(config.networkId, accountId, keyPair);
 
-    const connectConfig: ConnectConfig = {
+    // Cast to any to bypass strict type checking - the config is correct for v6
+    return connect({
         networkId: config.networkId,
-        keyStore,
         nodeUrl: config.nodeUrl,
-    };
-
-    return connect(connectConfig);
+        keyStore,
+    } as any);
 }
 
 export { testnetConfig, mainnetConfig };
