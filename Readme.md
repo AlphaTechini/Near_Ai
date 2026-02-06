@@ -111,7 +111,3 @@ pnpm run dev
         └── lib/
             └── near.ts             # Wallet integration
 ```
-
-## License
-
-MIT
