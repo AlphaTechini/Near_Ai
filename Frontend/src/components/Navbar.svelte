@@ -11,7 +11,7 @@
 <nav class="navbar">
   <div class="navbar-container">
     <a href="/" class="navbar-logo">
-      <div class="logo-icon">GP</div>
+      <img src="/gitpay_logo.png" alt="GitPay Agent Logo" class="logo-icon" />
       <span class="logo-text">GitPay Agent</span>
     </a>
     
@@ -70,14 +70,8 @@
   .logo-icon {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-    font-size: 0.875rem;
+    object-fit: contain;
   }
   
   .logo-text {
