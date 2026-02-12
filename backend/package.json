@@ -11,12 +11,16 @@
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@neardefi/shade-agent-js": "^1.0.4",
+    "@octokit/rest": "^22.0.1",
+    "axios": "^1.13.5",
     "bn.js": "^5.2.2",
     "dotenv": "^16.4.5",
+    "ethers": "^6.16.0",
     "fastify": "^4.26.2",
     "mongoose": "^8.2.1",
     "near-api-js": "^6.0.0",
-    "openai": "^6.18.0"
+    "openai": "^6.18.0",
+    "viem": "^2.45.3"
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",

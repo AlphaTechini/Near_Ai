@@ -21,6 +21,8 @@ app.register(cors, {
 
 // Register Routes
 app.register(intentRoutes);
+app.register(import('./routes/bounties'), { prefix: '/bounties' });
+app.register(import('./routes/webhooks'), { prefix: '/webhooks' });
 
 // Database connection
 connectDB().then(() => {

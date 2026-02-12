@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { signIn, accountId } from '$lib/near';
 </script>
 
 <section class="hero">
@@ -13,61 +12,72 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        Built on NEAR Protocol
+        DeepSeek V3 + NEAR MPC
       </div>
       
       <h1 class="hero-title">
-        Execute <span class="gradient-text">Blockchain Actions</span> on Human Time
+        Automate your <span class="gradient-text">Hackathon Payouts</span> with AI
       </h1>
       
       <p class="hero-description">
-        Intent Runtime bridges the gap between how humans think and how blockchains execute. 
-        Schedule future actions, set conditions, and let our agent handle the rest — 
-        all without giving up custody of your assets.
+        Meet <strong>GitPay Agent</strong>. The headless AI judge that reviews code, verifies functionality, and releases bounty funds instantly. Zero disputes. Zero delays.
       </p>
       
       <div class="hero-actions">
-        {#if $accountId}
-          <a href="/chat" class="btn btn-primary">
+          <a href="https://github.com/apps/gitpay-agent" target="_blank" class="btn btn-primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
             </svg>
-            Start with AI
+            Add to GitHub
           </a>
-          <a href="/dashboard" class="btn btn-secondary">View Dashboard</a>
-        {:else}
-          <button class="btn btn-primary" on:click={signIn}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            Connect Wallet to Start
-          </button>
-          <a href="#how-it-works" class="btn btn-secondary">Learn More</a>
-        {/if}
+          <a href="https://docs.gitpay.bot" class="btn btn-secondary">Read the Manifest</a>
       </div>
       
       <div class="hero-stats">
         <div class="stat">
-          <span class="stat-value">Non-Custodial</span>
-          <span class="stat-label">Your keys, your control</span>
+          <span class="stat-value">Trustless</span>
+          <span class="stat-label">Non-custodial MPC Payouts</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <span class="stat-value">Autonomous</span>
-          <span class="stat-label">Executes when you're offline</span>
+          <span class="stat-value">Instant</span>
+          <span class="stat-label">Settles on Base, NEAR, Eth</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <span class="stat-value">Secure</span>
-          <span class="stat-label">Constrained authorizations</span>
+          <span class="stat-value">Private</span>
+          <span class="stat-label">Verify Private Repos Securely</span>
         </div>
       </div>
     </div>
     
     <div class="hero-visual">
       <div class="visual-container">
-        <img src="/hero_illustration.png" alt="Intent Runtime Visualization" class="hero-image" />
+        <!-- Terminal UI Mockup -->
+        <div class="glass terminal-window" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; font-family: 'Geist Mono', monospace;">
+            <div class="terminal-header" style="background: rgba(255,255,255,0.05); padding: 12px; display: flex; align-items: center;">
+              <div style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; margin-right: 6px;"></div>
+              <div style="width: 10px; height: 10px; border-radius: 50%; background: #febc2e; margin-right: 6px;"></div>
+              <div style="width: 10px; height: 10px; border-radius: 50%; background: #28c840;"></div>
+              <span style="margin-left: auto; font-size: 0.75rem; color: #888;">neuralance-agent</span>
+            </div>
+            <div style="padding: 20px; font-size: 0.85rem; line-height: 1.6; color: #d1d5db;">
+               <div style="margin-bottom: 8px;">> <span style="color: #6366f1;">@gitpay-bot</span> /claim</div>
+               <div style="margin-bottom: 8px; color: #9ca3af;">Analyzing PR #42 via DeepSeek-V3...</div>
+               <div style="margin-bottom: 8px;">
+                 <span style="color: #34d399;">✓ Logic Verified</span><br/>
+                 <span style="color: #34d399;">✓ Tests Passed (12/12)</span><br/>
+                 <span style="color: #34d399;">✓ Security Audit: Clean</span>
+               </div>
+               <div style="margin-bottom: 12px; padding-left: 10px; border-left: 2px solid #a855f7;">
+                 <span style="color: #e5e7eb;">"Code adheres to bounty requirements. Complexity Score: 2.1 (Excellent)."</span>
+               </div>
+               <div style="color: #fbbf24; margin-bottom: 4px;">> Initiating MPC Signature...</div>
+               <div style="color: #34d399; font-weight: bold;">> Payout Sent: 500 USDC to 0x71C...39A 🚀</div>
+               <div style="color: #6b7280; font-size: 0.75rem; margin-top: 4px;">Tx Hash: 0x8a91...2b91</div>
+            </div>
+        </div>
+        
         <div class="visual-glow"></div>
       </div>
     </div>
@@ -229,13 +239,6 @@
     position: relative;
     max-width: 500px;
     margin: 0 auto;
-  }
-  
-  .hero-image {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-2xl);
-    animation: float 4s ease-in-out infinite;
   }
   
   .visual-glow {
