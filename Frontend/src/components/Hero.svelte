@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
 </script>
 
 <section class="hero">
@@ -12,15 +13,16 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        DeepSeek V3 + NEAR MPC
+        Automated Bounty Payouts
       </div>
       
       <h1 class="hero-title">
-        Automate your <span class="gradient-text">Hackathon Payouts</span> with AI
+        Code Passes. <br />
+        <span class="gradient-text">Money Moves.</span>
       </h1>
       
       <p class="hero-description">
-        Meet <strong>GitPay Agent</strong>. The headless AI judge that reviews code, verifies functionality, and releases bounty funds instantly. Zero disputes. Zero delays.
+        The first agent that reviews logic, verifies tests, and releases funds instantly. No manual review. No waiting.
       </p>
       
       <div class="hero-actions">
@@ -30,51 +32,50 @@
             </svg>
             Add to GitHub
           </a>
-          <a href="https://docs.gitpay.bot" class="btn btn-secondary">Read the Manifest</a>
+          <a href="/docs" class="btn btn-secondary">Read the Docs</a>
       </div>
       
       <div class="hero-stats">
         <div class="stat">
           <span class="stat-value">Trustless</span>
-          <span class="stat-label">Non-custodial MPC Payouts</span>
+          <span class="stat-label">Code is Law</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
           <span class="stat-value">Instant</span>
-          <span class="stat-label">Settles on Base, NEAR, Eth</span>
+          <span class="stat-label">0ms Delays</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <span class="stat-value">Private</span>
-          <span class="stat-label">Verify Private Repos Securely</span>
+          <span class="stat-value">Universal</span>
+          <span class="stat-label">Any Language</span>
         </div>
       </div>
     </div>
     
     <div class="hero-visual">
       <div class="visual-container">
+        <!-- Floating 3D Elements -->
+        <img src="/floating_coin.svg" alt="Crypto Coin" class="floating-element coin" />
+        <img src="/floating_contract.svg" alt="Smart Contract" class="floating-element contract" />
+        
         <!-- Terminal UI Mockup -->
-        <div class="glass terminal-window" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; font-family: 'Geist Mono', monospace;">
-            <div class="terminal-header" style="background: rgba(255,255,255,0.05); padding: 12px; display: flex; align-items: center;">
-              <div style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; margin-right: 6px;"></div>
-              <div style="width: 10px; height: 10px; border-radius: 50%; background: #febc2e; margin-right: 6px;"></div>
-              <div style="width: 10px; height: 10px; border-radius: 50%; background: #28c840;"></div>
-              <span style="margin-left: auto; font-size: 0.75rem; color: #888;">neuralance-agent</span>
+        <div class="glass terminal-window">
+            <div class="terminal-header">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+              <span class="terminal-title">gitpay-agent</span>
             </div>
-            <div style="padding: 20px; font-size: 0.85rem; line-height: 1.6; color: #d1d5db;">
-               <div style="margin-bottom: 8px;">> <span style="color: #6366f1;">@gitpay-bot</span> /claim</div>
-               <div style="margin-bottom: 8px; color: #9ca3af;">Analyzing PR #42 via DeepSeek-V3...</div>
-               <div style="margin-bottom: 8px;">
-                 <span style="color: #34d399;">✓ Logic Verified</span><br/>
-                 <span style="color: #34d399;">✓ Tests Passed (12/12)</span><br/>
-                 <span style="color: #34d399;">✓ Security Audit: Clean</span>
-               </div>
-               <div style="margin-bottom: 12px; padding-left: 10px; border-left: 2px solid #a855f7;">
-                 <span style="color: #e5e7eb;">"Code adheres to bounty requirements. Complexity Score: 2.1 (Excellent)."</span>
-               </div>
-               <div style="color: #fbbf24; margin-bottom: 4px;">> Initiating MPC Signature...</div>
-               <div style="color: #34d399; font-weight: bold;">> Payout Sent: 500 USDC to 0x71C...39A 🚀</div>
-               <div style="color: #6b7280; font-size: 0.75rem; margin-top: 4px;">Tx Hash: 0x8a91...2b91</div>
+            <div class="terminal-body">
+               <div class="line">> <span class="cmd">@gitpay-bot</span> /claim</div>
+               <div class="line info">Analyzing PR #42...</div>
+               <div class="line success">✓ Logic Verified</div>
+               <div class="line success">✓ Tests Passed (12/12)</div>
+               <div class="line quote">"Code meets requirements. Releasing funds."</div>
+               <div class="line warning">> Initiating Payout...</div>
+               <div class="line success bold">> Sent 500 USDC 🚀</div>
+               <div class="line muted">Tx: 0x8a91...2b91</div>
             </div>
         </div>
         
@@ -239,7 +240,85 @@
     position: relative;
     max-width: 500px;
     margin: 0 auto;
+    height: 400px;
   }
+  
+  .floating-element {
+    position: absolute;
+    width: 120px;
+    height: auto;
+    z-index: 10;
+    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
+  }
+  
+  .coin {
+    top: -40px;
+    right: -20px;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .contract {
+    bottom: -30px;
+    left: -30px;
+    width: 100px;
+    animation: float 5s ease-in-out infinite reverse;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+
+  .terminal-window {
+    background: rgba(10, 10, 15, 0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Geist Mono', monospace;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    height: 100%;
+  }
+
+  .terminal-header {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  .terminal-title {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #888;
+  }
+
+  .terminal-body {
+    padding: 24px;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #d1d5db;
+  }
+
+  .line { margin-bottom: 8px; }
+  .cmd { color: #6366f1; }
+  .info { color: #9ca3af; }
+  .success { color: #34d399; }
+  .quote { border-left: 2px solid #a855f7; padding-left: 10px; color: #e5e7eb; margin: 12px 0; font-style: italic; }
+  .warning { color: #fbbf24; }
+  .bold { font-weight: bold; }
+  .muted { color: #6b7280; font-size: 0.75rem; }
   
   .visual-glow {
     position: absolute;
@@ -247,7 +326,8 @@
     background: var(--gradient-glow);
     border-radius: var(--radius-2xl);
     z-index: -1;
-    filter: blur(40px);
+    filter: blur(60px);
+    opacity: 0.5;
   }
   
   @media (min-width: 768px) {
