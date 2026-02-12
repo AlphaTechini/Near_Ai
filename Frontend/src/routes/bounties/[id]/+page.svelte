@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Navbar from '../../components/Navbar.svelte';
+  import Navbar from '../../../components/Navbar.svelte';
   import type { Bounty } from '$lib/types/bounty';
 
   let bounty: Bounty | null = null;

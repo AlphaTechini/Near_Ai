@@ -74,7 +74,7 @@
       <div class="grid grid-2">
         {#each bounties as bounty}
           <!-- Bounty Card -->
-          <div class="card glass cursor-pointer" on:click={() => window.location.href = `/bounties/${bounty._id}`}>
+          <a href="/bounties/{bounty._id}" class="card glass block text-inherit no-underline hover:border-accent-cyan transition-colors">
             <div class="flex justify-between items-start mb-4">
               <h3 class="text-xl">{bounty.title}</h3>
               <span class="badge" style="background: rgba(0, 255, 157, 0.1); color: #00ff9d; border: 1px solid rgba(0, 255, 157, 0.2);">
@@ -90,7 +90,7 @@
               </span>
               <span>👤 {bounty.creator}</span>
             </div>
-          </div>
+          </a>
         {/each}
       </div>
     {/if}
