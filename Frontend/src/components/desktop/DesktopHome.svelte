@@ -22,7 +22,9 @@
 	<!-- Navigation -->
 	<Navbar />
 
-	<main class="relative z-10 mx-auto flex w-full max-w-md flex-grow flex-col">
+	<main
+		class="relative z-10 mx-auto flex w-full max-w-7xl flex-grow flex-col px-6 sm:px-12 lg:px-24"
+	>
 		<Hero />
 		<Friction />
 	</main>
@@ -31,7 +33,7 @@
 
 	<!-- Fixed Bottom CTA -->
 	<div class="pointer-events-none fixed right-0 bottom-6 left-0 z-50 px-6">
-		<div class="pointer-events-auto mx-auto max-w-md">
+		<div class="pointer-events-auto mx-auto max-w-4xl">
 			<button
 				class="bg-primary text-background-dark group flex w-full transform items-center justify-between rounded-xl px-6 py-4 font-mono font-bold shadow-[0_0_20px_rgba(37,192,244,0.4)] transition-all hover:bg-cyan-400 active:scale-95"
 			>
