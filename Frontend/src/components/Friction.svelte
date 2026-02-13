@@ -1,236 +1,226 @@
 <script lang="ts">
-	// No special scripts needed
 </script>
 
-<div class="w-full py-16">
-	<div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
-		<section class="relative">
-			<div class="bg-primary/10 absolute -top-6 -left-6 h-32 w-32 rounded-full blur-3xl"></div>
-			<div class="mb-6 flex items-baseline space-x-2">
-				<span class="text-lg font-bold text-red-500">&gt;</span>
-				<h2 class="text-xl font-bold tracking-wide text-white uppercase">
-					System_Error: <span
-						class="text-red-400 underline decoration-red-500/30 decoration-2 underline-offset-4"
-						>Friction</span
-					>
-				</h2>
-			</div>
-
-			<div class="grid grid-cols-1 gap-4">
-				<!-- Pain Point 1 -->
-				<div
-					class="group bg-surface-dark hover:border-primary/40 glass-card relative overflow-hidden rounded-xl border border-white/5 p-5 transition-all"
-				>
-					<div
-						class="absolute top-0 right-0 p-3 opacity-20 transition-opacity group-hover:opacity-40"
-					>
-						<span class="material-icons-round text-4xl text-red-400">link_off</span>
-					</div>
-					<div class="flex items-start space-x-4">
-						<div class="bg-surface-darker rounded-lg border border-white/5 p-3 shadow-inner">
-							<span class="material-icons-round text-primary text-xl">hub</span>
-						</div>
-						<div>
-							<h3 class="text-lg leading-tight font-bold text-white">Cross-Chain Chaos</h3>
-							<p class="mt-2 font-mono text-xs leading-relaxed text-slate-400">
-								ERR_NETWORK_TIMEOUT: Managing bounties across 5+ chains requires manual bridging.
-							</p>
-						</div>
-					</div>
-					<div
-						class="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-red-500/50 to-transparent"
-					></div>
-				</div>
-
-				<div class="grid grid-cols-2 gap-4">
-					<!-- Pain Point 2 -->
-					<div
-						class="group bg-surface-dark hover:border-primary/40 glass-card relative flex h-40 flex-col justify-between overflow-hidden rounded-xl border border-white/5 p-4 transition-colors"
-					>
-						<div
-							class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-red-500/10 blur-xl"
-						></div>
-						<div
-							class="bg-surface-darker mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-white/5 shadow-inner"
-						>
-							<span class="material-icons-round text-primary text-xl">nearby_error</span>
-						</div>
-						<div>
-							<h3 class="text-sm leading-tight font-bold text-white">Fake PR<br />Spam</h3>
-							<p class="mt-1 font-mono text-[10px] text-slate-400">low_quality_code detected</p>
-						</div>
-					</div>
-
-					<!-- Pain Point 3 -->
-					<div
-						class="group bg-surface-dark hover:border-primary/40 glass-card relative flex h-40 flex-col justify-between overflow-hidden rounded-xl border border-white/5 p-4 transition-colors"
-					>
-						<div
-							class="bg-surface-darker mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-white/5 shadow-inner"
-						>
-							<span class="material-icons-round text-primary text-xl">dashboard_customize</span>
-						</div>
-						<div>
-							<h3 class="text-sm leading-tight font-bold text-white">Dashboard Fatigue</h3>
-							<p class="mt-1 font-mono text-[10px] text-slate-400">context_switching_overload</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Divider -->
-		<div class="flex items-center space-x-4 opacity-50 lg:hidden">
-			<div class="bg-primary/30 h-px flex-1"></div>
-			<span class="text-primary/70 font-mono text-xs">INITIATING_FIX</span>
-			<div class="bg-primary/30 h-px flex-1"></div>
+<section class="friction-section" id="friction">
+	<div class="friction-container">
+		<!-- Header -->
+		<div class="section-badge">
+			<span class="badge-dot"></span>
+			[ ERR_SYSTEM_FRICTION ]
 		</div>
+		<h2 class="section-title">The Friction</h2>
+		<p class="section-desc">
+			Cross-chain development is broken. Fragmented liquidity and manual processes create a
+			bottleneck for decentralized innovation.
+		</p>
 
-		<!-- Section 2: The Hack -->
-		<section class="relative">
-			<div
-				class="bg-primary/5 pointer-events-none absolute top-1/4 right-0 h-48 w-48 rounded-full blur-3xl"
-			></div>
-			<div class="mb-8 flex items-baseline space-x-2">
-				<span class="text-primary text-lg font-bold">&gt;</span>
-				<h2 class="text-xl font-bold tracking-wide text-white uppercase">
-					Executing: <span class="text-primary text-glow">The_Hack</span>
-				</h2>
-			</div>
-
-			<!-- Vertical Pipeline -->
-			<div class="relative pl-4">
-				<!-- Continuous Line Background -->
-				<div
-					class="bg-surface-darker absolute top-4 bottom-8 left-[27px] h-full w-0.5 border-l border-white/10"
-				></div>
-				<!-- Glowing Active Line (Simulated Progress) -->
-				<div
-					class="from-primary via-primary absolute top-4 left-[27px] z-0 h-3/4 w-0.5 bg-gradient-to-b to-transparent shadow-[0_0_8px_rgba(37,192,244,0.6)]"
-				></div>
-
-				<div class="relative z-10 space-y-8">
-					<!-- Step 1: Trigger -->
-					<div class="group flex items-start">
-						<div class="relative mr-4 flex-shrink-0">
-							<div
-								class="bg-background-dark border-primary text-primary flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-bold shadow-[0_0_10px_rgba(37,192,244,0.3)]"
-							>
-								01
-							</div>
-						</div>
-						<div
-							class="bg-surface-dark border-primary/20 box-glow glass-card relative flex-1 overflow-hidden rounded-lg border p-4"
-						>
-							<div class="mb-2 flex items-start justify-between">
-								<h3 class="text-sm font-bold tracking-wider text-white uppercase">Trigger</h3>
-								<span class="text-primary bg-primary/10 rounded px-2 py-0.5 font-mono text-[10px]"
-									>GITHUB_API</span
-								>
-							</div>
-							<div
-								class="border-primary rounded border-l-2 bg-black/40 p-2 font-mono text-xs text-slate-300"
-							>
-								<span class="text-purple-400">/bounty</span>
-								<span class="text-green-400">$500</span>
-								<br />
-								<span class="text-slate-500">// Creating bounty in issue #42</span>
-							</div>
-						</div>
-					</div>
-
-					<!-- Step 2: Work -->
-					<div class="group flex items-start">
-						<div class="relative mr-4 flex-shrink-0">
-							<div
-								class="bg-background-dark border-primary text-primary flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-bold shadow-[0_0_10px_rgba(37,192,244,0.3)]"
-							>
-								02
-							</div>
-						</div>
-						<div
-							class="bg-surface-dark group-hover:border-primary/20 glass-card flex-1 rounded-lg border border-white/5 p-4 transition-colors"
-						>
-							<div class="mb-2 flex items-start justify-between">
-								<h3 class="text-sm font-bold tracking-wider text-white uppercase">Work</h3>
-								<span class="font-mono text-[10px] text-slate-500">PR_EVENT</span>
-							</div>
-							<div class="mt-1 flex items-center space-x-3">
-								<div
-									class="bg-surface-darker flex h-8 w-8 items-center justify-center rounded border border-white/10"
-								>
-									<span class="material-icons-round text-sm text-slate-400">code</span>
-								</div>
-								<p class="text-xs text-slate-300">
-									Contributor submits Pull Request via standard flow.
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<!-- Step 3: Verification (AI) -->
-					<div class="group flex items-start">
-						<div class="relative mr-4 flex-shrink-0">
-							<div
-								class="bg-background-dark border-primary text-primary flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-bold shadow-[0_0_10px_rgba(37,192,244,0.3)]"
-							>
-								03
-							</div>
-						</div>
-						<div
-							class="from-surface-dark to-surface-darker border-primary/30 glass-card relative flex-1 overflow-hidden rounded-lg border bg-gradient-to-br p-4"
-						>
-							<!-- AI Pulse Effect -->
-							<div
-								class="bg-primary/10 absolute -top-6 -right-6 h-20 w-20 animate-pulse rounded-full blur-xl"
-							></div>
-							<div class="relative z-10 mb-2 flex items-start justify-between">
-								<h3 class="flex items-center text-sm font-bold tracking-wider text-white uppercase">
-									Verification
-									<span class="bg-primary ml-2 h-2 w-2 animate-ping rounded-full"></span>
-								</h3>
-								<span
-									class="text-primary border-primary/30 rounded border px-1.5 py-0.5 font-mono text-[10px]"
-									>NEAR_AI</span
-								>
-							</div>
-							<p class="relative z-10 text-xs leading-relaxed text-slate-300">
-								<strong class="text-white">AI Judge</strong> analyzes code quality & security instantly.
-							</p>
-							<div class="bg-surface-darker mt-2 h-1 w-full overflow-hidden rounded-full">
-								<div class="bg-primary h-full w-2/3 shadow-[0_0_5px_#25c0f4]"></div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Step 4: Settlement -->
-					<div class="group flex items-start">
-						<div class="relative mr-4 flex-shrink-0">
-							<div
-								class="bg-background-dark flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 text-[10px] font-bold text-slate-500"
-							>
-								04
-							</div>
-						</div>
-						<div
-							class="bg-surface-dark glass-card flex-1 rounded-lg border border-white/5 p-4 opacity-80"
-						>
-							<div class="mb-2 flex items-start justify-between">
-								<h3 class="text-sm font-bold tracking-wider text-slate-300 uppercase">
-									Settlement
-								</h3>
-								<span class="font-mono text-[10px] text-slate-500">MPC_VAULT</span>
-							</div>
-							<div
-								class="bg-surface-darker flex items-center justify-between rounded border border-white/5 p-2"
-							>
-								<span class="font-mono text-xs text-slate-400">Status:</span>
-								<span class="text-primary font-mono text-xs">AWAITING_MERGE</span>
-							</div>
-						</div>
-					</div>
+		<!-- Cards Grid -->
+		<div class="friction-grid">
+			<!-- Card 1 -->
+			<div class="friction-card">
+				<div class="card-icon-wrapper">
+					<span class="material-icons card-icon">hub</span>
+				</div>
+				<div class="card-corner-icon">
+					<span class="material-icons">lan</span>
+				</div>
+				<h3 class="card-title">Cross-Chain Chaos</h3>
+				<p class="card-desc">
+					Liquidity fragmentation across dozens of networks forces developers to maintain complex
+					bridge logic and disparate state managers.
+				</p>
+				<div class="card-footer">
+					<span>ID: FRIC_001 // STATUS: UNRESOLVED</span>
 				</div>
 			</div>
-		</section>
+
+			<!-- Card 2 -->
+			<div class="friction-card">
+				<div class="card-icon-wrapper">
+					<span class="material-icons card-icon">mark_email_unread</span>
+				</div>
+				<div class="card-corner-icon">
+					<span class="material-icons">warning</span>
+				</div>
+				<h3 class="card-title">Fake PR Spam</h3>
+				<h4 class="card-subtitle">Fake PR Spam</h4>
+				<p class="card-desc">
+					Open-source bounties are plagued by low-quality, AI-generated spam, drowning legitimate
+					contributors and wasting maintainer bandwidth.
+				</p>
+				<div class="card-footer">
+					<span>ID: FRIC_002 // STATUS: NOISY</span>
+				</div>
+			</div>
+
+			<!-- Card 3 -->
+			<div class="friction-card">
+				<div class="card-icon-wrapper">
+					<span class="material-icons card-icon">dashboard_customize</span>
+				</div>
+				<div class="card-corner-icon">
+					<span class="material-icons">grid_view</span>
+				</div>
+				<h3 class="card-title">Dashboard Fatigue</h3>
+				<p class="card-desc">
+					Users and devs are exhausted by managing 20+ different dApp interfaces, wallets, and gas
+					tokens just to execute a single workflow.
+				</p>
+				<div class="card-footer">
+					<span>ID: FRIC_003 // STATUS: OVERLOAD</span>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
+</section>
+
+<style>
+	.friction-section {
+		padding: 6rem 0;
+		position: relative;
+		z-index: 10;
+	}
+
+	.friction-container {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.section-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		color: #ef4444;
+		padding: 0.375rem 0.875rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(239, 68, 68, 0.25);
+		background: rgba(239, 68, 68, 0.08);
+		margin-bottom: 1.5rem;
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #ef4444;
+		animation: pulse-dot 2s ease-in-out infinite;
+	}
+
+	@keyframes pulse-dot {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.4;
+		}
+	}
+
+	.section-title {
+		font-size: clamp(2.5rem, 4vw, 3.5rem);
+		font-weight: 800;
+		color: white;
+		margin-bottom: 1rem;
+		letter-spacing: -0.03em;
+	}
+
+	.section-desc {
+		font-size: 1.0625rem;
+		color: #94a3b8;
+		line-height: 1.7;
+		max-width: 550px;
+		margin-bottom: 3rem;
+	}
+
+	.friction-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+	}
+
+	.friction-card {
+		position: relative;
+		background: rgba(10, 10, 15, 0.8);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 1rem;
+		padding: 2rem;
+		transition: all 0.3s ease;
+		overflow: hidden;
+	}
+
+	.friction-card:hover {
+		border-color: rgba(37, 192, 244, 0.2);
+		transform: translateY(-4px);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	}
+
+	.card-icon-wrapper {
+		width: 3rem;
+		height: 3rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 0.75rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.card-icon {
+		font-size: 1.25rem;
+		color: #25c0f4;
+	}
+
+	.card-corner-icon {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		opacity: 0.1;
+	}
+
+	.card-corner-icon .material-icons {
+		font-size: 2.5rem;
+		color: white;
+	}
+
+	.card-title {
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: white;
+		margin-bottom: 0.75rem;
+	}
+
+	.card-subtitle {
+		font-size: 1rem;
+		font-weight: 700;
+		color: white;
+		margin-bottom: 0.75rem;
+	}
+
+	.card-desc {
+		font-size: 0.875rem;
+		color: #94a3b8;
+		line-height: 1.7;
+		margin-bottom: 1.5rem;
+	}
+
+	.card-footer {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.625rem;
+		letter-spacing: 0.05em;
+		color: #475569;
+		padding-top: 1rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.04);
+	}
+
+	@media (max-width: 1024px) {
+		.friction-grid {
+			grid-template-columns: 1fr;
+			max-width: 500px;
+		}
+	}
+</style>

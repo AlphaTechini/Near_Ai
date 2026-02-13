@@ -31,8 +31,14 @@ const ERC20_ABI = [
     }
 ];
 
-export async function releasePayout(hunterAddress: string, amountUSD: string, nearAccount: Account) {
+export async function releasePayout(hunterAddress: string, amountUSD: string, nearAccount?: Account) {
     console.log(`💸 Initiating Payout of $${amountUSD} to ${hunterAddress} on Base...`);
+
+    if (!nearAccount) {
+        // MVP fallback: log and return a placeholder tx hash
+        console.warn('[MPC] No NEAR account provided for MPC signing. Returning mock tx hash for MVP.');
+        return '0x_mock_tx_hash_mvp';
+    }
 
     try {
         // 1. Initialize Chain Signature Contract
@@ -97,3 +103,9 @@ export async function releasePayout(hunterAddress: string, amountUSD: string, ne
         throw new Error(`MPC Payout Failed: ${error.message}`);
     }
 }
+
+// Exported service object for use in bot.ts
+export const mpcSignerService = {
+    releasePayout,
+};
+

@@ -5,13 +5,14 @@ import { aiJudgeService } from "./services/aiJudge";
 import { mpcSignerService } from "./services/mpcSigner";
 import { utils } from "near-api-js";
 
+
 export default (app: Probot) => {
     app.log.info("GitPay Bot is running!");
 
     // -------------------------------------------------------------------------
     // Command Parser: /bounty $100
     // -------------------------------------------------------------------------
-    app.on("issue_comment.created", async (context) => {
+    app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         const body = context.payload.comment.body;
         const isBountyCmd = body.trim().startsWith("/bounty");
 
@@ -88,7 +89,7 @@ To activate this bounty, please secure the funds using **PingPay**:
     // -------------------------------------------------------------------------
     // Command Parser: /claim
     // -------------------------------------------------------------------------
-    app.on("issue_comment.created", async (context) => {
+    app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         const body = context.payload.comment.body;
         if (!body.trim().startsWith("/claim")) return;
 

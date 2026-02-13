@@ -6,7 +6,7 @@ import intentRoutes from './routes/intents';
 import watcher from './services/watcher';
 import { nearAiService } from './services/nearAiService';
 import { Server, IncomingMessage, ServerResponse } from "http";
-import { createNodeMiddleware, proBotApp } from "probot";
+import { createNodeMiddleware, createProbot } from "probot";
 import myProbotApp from "./bot";
 
 dotenv.config();
@@ -29,8 +29,9 @@ app.register(import('./routes/webhooks'), { prefix: '/webhooks' });
 
 // Probot Middleware for GitHub Webhooks
 // Mounts on /api/github/webhooks by default or we can specify
+const probot = createProbot();
 const probotMiddleware = createNodeMiddleware(myProbotApp, {
-  probot: proBotApp,
+  probot,
   webhooksPath: '/api/github/webhooks'
 });
 

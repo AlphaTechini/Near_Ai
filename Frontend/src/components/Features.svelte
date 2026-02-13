@@ -1,205 +1,343 @@
 <script lang="ts">
 </script>
 
-<section class="features" id="features">
-  <div class="features-container">
-    <div class="section-header">
-      <span class="section-tag">Features</span>
-      <h2 class="section-title">Why Choose Intent Runtime?</h2>
-      <p class="section-description">
-        A new execution primitive that makes blockchains usable on human time.
-      </p>
-    </div>
-    
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon icon-time">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 6v6l4 2" />
-          </svg>
-        </div>
-        <h3>Time-Based Execution</h3>
-        <p>Schedule actions for the future. "Swap in 30 minutes" or "Execute at 3 PM" — the agent handles the timing.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon icon-condition">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-          </svg>
-        </div>
-        <h3>Conditional Triggers</h3>
-        <p>Set price thresholds and market conditions. Your intent executes only when your criteria are met.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon icon-secure">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-        </div>
-        <h3>Non-Custodial</h3>
-        <p>Your keys never leave your wallet. We use constrained authorizations, not pre-signed transactions.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon icon-ai">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-        </div>
-        <h3>Natural Language</h3>
-        <p>Express your intent in plain English. Our AI understands "Swap 10 NEAR to USDC if price drops below $2".</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon icon-offline">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
-          </svg>
-        </div>
-        <h3>Works Offline</h3>
-        <p>Go about your day. The agent monitors conditions and executes your intents even when you're not online.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon icon-audit">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <path d="M14 2v6h6" />
-            <path d="M16 13H8M16 17H8M10 9H8" />
-          </svg>
-        </div>
-        <h3>Full Audit Trail</h3>
-        <p>Every intent is tracked from creation to execution. See status, transaction hashes, and failure reasons.</p>
-      </div>
-    </div>
-  </div>
+<section class="features-section" id="features">
+	<div class="features-container">
+		<!-- Header -->
+		<div class="features-header">
+			<div class="section-tag">SYSTEM ADVANTAGES</div>
+			<h2 class="features-title">
+				Engineered for <span class="title-accent"><em>Speed</em></span>.
+			</h2>
+		</div>
+
+		<!-- Bento Grid -->
+		<div class="bento-grid">
+			<!-- Large Card: Invisible UI -->
+			<div class="bento-card bento-large">
+				<div class="bento-visual">
+					<!-- Animated Concentric Circles -->
+					<div class="circles-wrapper">
+						<div class="circle circle-outer"></div>
+						<div class="circle circle-mid"></div>
+						<div class="circle circle-inner"></div>
+						<div class="circle-dot"></div>
+					</div>
+				</div>
+				<div class="bento-content">
+					<div class="bento-icon-wrapper">
+						<span class="material-icons bento-icon">grid_view</span>
+					</div>
+					<h3 class="bento-title">Invisible UI</h3>
+					<p class="bento-desc">
+						Seamless automation and zero-friction interactions. Our interface operates behind the
+						scenes so you can focus on pure execution.
+					</p>
+				</div>
+			</div>
+
+			<!-- Right Column -->
+			<div class="bento-right-col">
+				<!-- Optimistic Escrow -->
+				<div class="bento-card bento-small">
+					<div class="bento-card-header">
+						<span class="material-icons" style="color: #25c0f4; font-size: 1.25rem;"
+							>verified_user</span
+						>
+						<div class="escrow-corner-icon">
+							<span class="material-icons">shield</span>
+						</div>
+					</div>
+					<h3 class="bento-title-sm">OPTIMISTIC ESCROW</h3>
+					<p class="bento-desc-sm">
+						High-speed security powered by our trust-but-verify, optimistic protocol. Instant
+						settlement with zero compromise.
+					</p>
+					<div class="status-pill">
+						<span>STATUS: OPERATIONAL</span>
+						<span class="status-dot-green"></span>
+					</div>
+				</div>
+
+				<!-- Universal Liquidity -->
+				<div class="bento-card bento-small">
+					<div class="bento-card-header">
+						<span class="material-icons" style="color: #25c0f4; font-size: 1.25rem;"
+							>account_balance</span
+						>
+					</div>
+					<h3 class="bento-title-sm">UNIVERSAL LIQUIDITY</h3>
+					<p class="bento-desc-sm">
+						Aggregated pool access providing deep liquidity across all major chains. One entry
+						point, infinite depth.
+					</p>
+					<div class="progress-bar">
+						<div class="progress-fill"></div>
+					</div>
+					<span class="progress-label">AGGREGATING...</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <style>
-  .features {
-    padding: var(--spacing-3xl) 0;
-    background: var(--color-bg-secondary);
-  }
-  
-  .features-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
-  }
-  
-  .section-header {
-    text-align: center;
-    margin-bottom: var(--spacing-3xl);
-  }
-  
-  .section-tag {
-    display: inline-block;
-    padding: var(--spacing-xs) var(--spacing-md);
-    background: rgba(139, 92, 246, 0.1);
-    border-radius: var(--radius-full);
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-accent-primary);
-    margin-bottom: var(--spacing-md);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  
-  .section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .section-description {
-    font-size: 1.125rem;
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: var(--spacing-lg);
-  }
-  
-  .feature-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
-    transition: all var(--transition-base);
-  }
-  
-  .feature-card:hover {
-    border-color: var(--border-color-hover);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .feature-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .icon-time {
-    background: rgba(99, 102, 241, 0.15);
-    color: #6366f1;
-  }
-  
-  .icon-condition {
-    background: rgba(6, 182, 212, 0.15);
-    color: #06b6d4;
-  }
-  
-  .icon-secure {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-  }
-  
-  .icon-ai {
-    background: rgba(168, 85, 247, 0.15);
-    color: #a855f7;
-  }
-  
-  .icon-offline {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
-  }
-  
-  .icon-audit {
-    background: rgba(236, 72, 153, 0.15);
-    color: #ec4899;
-  }
-  
-  .feature-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .feature-card p {
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-  
-  @media (min-width: 640px) {
-    .features-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .features-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
+	.features-section {
+		padding: 6rem 0;
+		position: relative;
+		z-index: 10;
+	}
+
+	.features-container {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.features-header {
+		margin-bottom: 3rem;
+	}
+
+	.section-tag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.15em;
+		color: #25c0f4;
+		margin-bottom: 0.75rem;
+	}
+
+	.features-title {
+		font-size: clamp(2.5rem, 5vw, 3.5rem);
+		font-weight: 800;
+		color: white;
+		letter-spacing: -0.03em;
+	}
+
+	.title-accent {
+		color: #25c0f4;
+		text-shadow: 0 0 30px rgba(37, 192, 244, 0.3);
+	}
+
+	/* Bento Grid */
+	.bento-grid {
+		display: grid;
+		grid-template-columns: 1.2fr 0.8fr;
+		gap: 1.5rem;
+	}
+
+	.bento-card {
+		background: rgba(10, 10, 15, 0.8);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 1rem;
+		overflow: hidden;
+		transition: all 0.3s ease;
+	}
+
+	.bento-card:hover {
+		border-color: rgba(37, 192, 244, 0.15);
+	}
+
+	/* Large Card */
+	.bento-large {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.bento-visual {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 3rem;
+		background: linear-gradient(180deg, rgba(10, 10, 15, 1) 0%, rgba(10, 10, 15, 0.95) 100%);
+		min-height: 280px;
+	}
+
+	.circles-wrapper {
+		position: relative;
+		width: 200px;
+		height: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.circle {
+		position: absolute;
+		border-radius: 50%;
+		border: 1px solid rgba(37, 192, 244, 0.15);
+	}
+
+	.circle-outer {
+		width: 200px;
+		height: 200px;
+		animation: pulse-circle 3s ease-in-out infinite;
+	}
+
+	.circle-mid {
+		width: 140px;
+		height: 140px;
+		border-color: rgba(37, 192, 244, 0.25);
+		animation: pulse-circle 3s ease-in-out infinite 0.5s;
+	}
+
+	.circle-inner {
+		width: 80px;
+		height: 80px;
+		border-color: rgba(37, 192, 244, 0.35);
+		animation: pulse-circle 3s ease-in-out infinite 1s;
+	}
+
+	.circle-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #25c0f4;
+		box-shadow: 0 0 15px rgba(37, 192, 244, 0.6);
+	}
+
+	@keyframes pulse-circle {
+		0%,
+		100% {
+			transform: scale(1);
+			opacity: 0.6;
+		}
+		50% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+	}
+
+	.bento-content {
+		padding: 2rem;
+	}
+
+	.bento-icon-wrapper {
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(37, 192, 244, 0.08);
+		border-radius: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.bento-icon {
+		font-size: 1.125rem;
+		color: #25c0f4;
+	}
+
+	.bento-title {
+		font-size: 1.375rem;
+		font-weight: 700;
+		color: white;
+		margin-bottom: 0.75rem;
+	}
+
+	.bento-desc {
+		font-size: 0.875rem;
+		color: #94a3b8;
+		line-height: 1.7;
+	}
+
+	/* Right Column */
+	.bento-right-col {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.bento-small {
+		padding: 1.5rem;
+		flex: 1;
+	}
+
+	.bento-card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.escrow-corner-icon {
+		opacity: 0.08;
+	}
+
+	.escrow-corner-icon .material-icons {
+		font-size: 2rem;
+	}
+
+	.bento-title-sm {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.875rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		color: white;
+		margin-bottom: 0.75rem;
+	}
+
+	.bento-desc-sm {
+		font-size: 0.8125rem;
+		color: #94a3b8;
+		line-height: 1.6;
+		margin-bottom: 1rem;
+	}
+
+	.status-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.625rem;
+		letter-spacing: 0.08em;
+		color: #22c55e;
+	}
+
+	.status-dot-green {
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: #22c55e;
+		box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 4px;
+		background: rgba(255, 255, 255, 0.04);
+		border-radius: 2px;
+		overflow: hidden;
+		margin-bottom: 0.5rem;
+	}
+
+	.progress-fill {
+		width: 65%;
+		height: 100%;
+		background: linear-gradient(90deg, #25c0f4, #0891b2);
+		border-radius: 2px;
+		animation: progress-anim 2s ease-in-out infinite alternate;
+	}
+
+	@keyframes progress-anim {
+		0% {
+			width: 55%;
+		}
+		100% {
+			width: 75%;
+		}
+	}
+
+	.progress-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.5625rem;
+		letter-spacing: 0.1em;
+		color: #475569;
+	}
+
+	@media (max-width: 1024px) {
+		.bento-grid {
+			grid-template-columns: 1fr;
+		}
+	}
 </style>

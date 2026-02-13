@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+@theme {
+  /* Colors */
+  --color-primary: #25c0f4;
+  --color-background-dark: #050507;
+  --color-background-light: #050507;
+  --color-surface-dark: #0a0a0f;
+  --color-surface-darker: #13131f;
+
+  /* Shadows */
+  --shadow-neon: 0 0 10px rgba(37, 192, 244, 0.3);
+  --shadow-neon-strong: 0 0 20px rgba(37, 192, 244, 0.5), 0 0 40px rgba(37, 192, 244, 0.2);
+
+  /* Fonts */
+  --font-display: 'Inter', system-ui, sans-serif;
+}
+
 /* ===== Design System: NeuraLance (Cyberpunk Professional) ===== */
 
 :root {
