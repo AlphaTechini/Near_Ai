@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ===== Design System: NeuraLance (Cyberpunk Professional) ===== */
 
 :root {
@@ -232,63 +234,64 @@ p {
   font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
+}
 
-  /* Custom Navigation Styles matched to new design */
-  .navbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+/* Custom Navigation Styles matched to new design */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  /* Custom Grid Background for Cyberpunk feel */
-  .bg-cyber-grid {
-    background-image: linear-gradient(rgba(37, 192, 244, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37, 192, 244, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
+/* Custom Grid Background for Cyberpunk feel */
+.bg-cyber-grid {
+  background-image: linear-gradient(rgba(37, 192, 244, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 192, 244, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
 
-  /* Scanline effect */
-  .scanlines {
-    background: linear-gradient(to bottom,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0) 50%,
-        rgba(0, 0, 0, 0.2) 50%,
-        rgba(0, 0, 0, 0.2));
-    background-size: 100% 4px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0.15;
-  }
+/* Scanline effect */
+.scanlines {
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2));
+  background-size: 100% 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.15;
+}
 
-  .glass-panel {
-    background: rgba(22, 27, 34, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(48, 54, 61, 0.8);
-  }
+.glass-panel {
+  background: rgba(22, 27, 34, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(48, 54, 61, 0.8);
+}
 
-  /* Glowing Text Utility */
-  .text-glow {
-    text-shadow: 0 0 10px rgba(37, 192, 244, 0.5);
-  }
+/* Glowing Text Utility */
+.text-glow {
+  text-shadow: 0 0 10px rgba(37, 192, 244, 0.5);
+}
 
-  /* Box Glow */
-  .box-glow {
-    box-shadow: 0 0 15px rgba(37, 192, 244, 0.15);
-  }
+/* Box Glow */
+.box-glow {
+  box-shadow: 0 0 15px rgba(37, 192, 244, 0.15);
+}
 
-  .glass-card {
-    @apply bg-background-dark/80 backdrop-blur-md border border-primary/20 shadow-[0_0_15px_-3px_rgba(37, 192, 244, 0.1)];
-  }
+.glass-card {
+  @apply bg-background-dark/80 backdrop-blur-md border border-primary/20 shadow-[0_0_15px_-3px_rgba(37, 192, 244, 0.1)];
+}
 
-  .neon-text {
-    text-shadow: 0 0 10px rgba(37, 192, 244, 0.5);
-  }
+.neon-text {
+  text-shadow: 0 0 10px rgba(37, 192, 244, 0.5);
+}
 
-  .neon-border {
-    box-shadow: 0 0 10px rgba(37, 192, 244, 0.2), inset 0 0 5px rgba(37, 192, 244, 0.1);
-  }
+.neon-border {
+  box-shadow: 0 0 10px rgba(37, 192, 244, 0.2), inset 0 0 5px rgba(37, 192, 244, 0.1);
+}
