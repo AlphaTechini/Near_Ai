@@ -45,16 +45,16 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(10, 10, 15, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent; /* Let the background elements show through or handle via parent */
   }
   
   .navbar-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
-    height: 72px;
+    width: 100%;
+    max-width: 100%; /* Allow full width as per design or constrain if needed */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -63,46 +63,46 @@
   .navbar-logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.5rem;
     text-decoration: none;
   }
 
   .logo-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    object-fit: contain;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    background-color: var(--color-primary, #25c0f4); /* Fallback */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* font-bold font-mono text-lg shadow-neon from design */
+    box-shadow: 0 0 15px rgba(37, 192, 244, 0.4), 0 0 30px rgba(37, 192, 244, 0.2);
   }
   
   .logo-text {
-    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--color-text-primary);
+    font-size: 1.25rem;
+    letter-spacing: -0.025em;
+    color: white;
   }
   
-  .navbar-links {
-    display: flex;
-    gap: var(--spacing-xl);
-  }
-  
-  .nav-link {
-    color: var(--color-text-secondary);
-    font-weight: 500;
-    transition: color var(--transition-fast);
-  }
-  
-  .nav-link:hover,
-  .nav-link.active {
-    color: var(--color-text-primary);
-  }
-  
-  .navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
+  .menu-btn {
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
   }
 
-  @media (max-width: 768px) {
-    .navbar-links { display: none; }
+  .menu-btn:hover {
+      color: var(--color-primary, #25c0f4);
   }
+
+  /* Hide default links for now to match the "Hero" design which only shows Logo + Menu button */
+  .navbar-links, .navbar-actions {
+     display: none; 
+  }
+  
+  /* If we want to keep the links but style them differently, we can, but the design shows a simple nav */
+
 </style>

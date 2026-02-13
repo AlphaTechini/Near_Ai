@@ -3,6 +3,33 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#25c0f4",
+                            "background-light": "#f5f8f8",
+                            "background-dark": "#0d1117", // Overriding to match specific request for GitHub dark mode shade
+                        },
+                        fontFamily: {
+                            "display": ["Space Grotesk", "sans-serif"],
+                            "mono": ["JetBrains Mono", "monospace"],
+                        },
+                        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                        boxShadow: {
+                            'neon': '0 0 15px rgba(37, 192, 244, 0.4), 0 0 30px rgba(37, 192, 244, 0.2)',
+                            'neon-strong': '0 0 20px rgba(37, 192, 244, 0.6), 0 0 40px rgba(37, 192, 244, 0.3)',
+                        }
+                    },
+                },
+            }
+        </script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

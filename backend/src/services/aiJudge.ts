@@ -1,51 +1,97 @@
-import { OpenAI } from "openai";
-import dotenv from "dotenv";
+import { nearAiService } from './nearAiService';
 
-dotenv.config();
+export interface VerificationResult {
+    approved: boolean;
+    confidence: number;
+    reasoning: string;
+}
 
-const nearAI = new OpenAI({
-    baseURL: "https://cloud-api.near.ai/v1",
-    apiKey: process.env.NEAR_AI_API_KEY,
-});
+export class AiJudgeService {
+    private static instance: AiJudgeService;
 
-export async function judgePR(diff: string, issueDescription: string): Promise<boolean> {
-    const prompt = `
-    You are a Senior Code Reviewer controlling a $500 payout.
-    
-    ISSUE REQUIREMENT:
-    "${issueDescription}"
-    
-    CODE SUBMISSION (GIT DIFF):
-    ${diff.substring(0, 15000)} // Truncate to fit context
-    
-    TASK:
-    1. Does this code actually solve the issue?
-    2. Is it malicious?
-    
-    OUTPUT:
-    Reply strictly with JSON: { "approved": boolean, "reason": "string" }
-  `;
+    private constructor() { }
 
-    try {
-        const completion = await nearAI.chat.completions.create({
-            model: "deepseek-ai/DeepSeek-V3.1", // Verified model name from docs research
-            messages: [{ role: "user", content: prompt }],
-        });
+    static getInstance(): AiJudgeService {
+        if (!AiJudgeService.instance) {
+            AiJudgeService.instance = new AiJudgeService();
+        }
+        return AiJudgeService.instance;
+    }
 
-        const content = completion.choices[0].message.content;
-        if (!content) {
-            console.error("AI returned empty content");
-            return false;
+    /**
+     * Evaluates a Pull Request based on its Diff and the Issue Description.
+     * @param issueDescription The description of the issue/bounty.
+     * @param prDiff The git diff of the pull request.
+     */
+    async evaluate(issueDescription: string, prDiff: string): Promise<VerificationResult> {
+        console.log('[AiJudge] Evaluating PR Diff...');
+
+        if (!prDiff || prDiff.trim() === '') {
+            return {
+                approved: false,
+                confidence: 1.0,
+                reasoning: "The Pull Request diff is empty."
+            };
         }
 
-        // Attempt to clean markdown if present (e.g. ```json ... ```)
-        const jsonString = content.replace(/```json/g, '').replace(/```/g, '').trim();
+        // Limit Diff Size to avoid context window overflow (simple truncation for MVP)
+        const MAX_DIFF_LENGTH = 15000;
+        const truncatedDiff = prDiff.length > MAX_DIFF_LENGTH
+            ? prDiff.substring(0, MAX_DIFF_LENGTH) + "\n...[Diff Truncated]"
+            : prDiff;
 
-        const result = JSON.parse(jsonString);
-        console.log(`🤖 AI Verdict: ${result.approved ? "PAYOUT APPROVED" : "DENIED"} - Reason: ${result.reason}`);
-        return result.approved;
-    } catch (e) {
-        console.error("AI hallucinations or error, defaulting to NO", e);
-        return false;
+        const systemPrompt = `You are a Senior Code Reviewer and Bounty Judge.
+Your goal is to determine if a Pull Request (PR) satisfies the requirements of a Bounty Issue.
+
+Input:
+1. Issue Description (The Requirements)
+2. PR Diff (The Implementation)
+
+Rules:
+- implementation must match requirements.
+- logic must be sound.
+- reject if there are security vulnerabilities.
+- reject if changes are irrelevant or spam.
+- reject if critical files (.github/workflows, tests) are modified maliciously.
+
+Output JSON format:
+{
+  "approved": boolean,
+  "confidence": number (0.0 to 1.0),
+  "reasoning": "string (concise explanation)"
+}`;
+
+        const userMessage = `Issue Requirements:
+${issueDescription}
+
+PR Diff:
+${truncatedDiff}`;
+
+        try {
+            const response = await nearAiService.chat([
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userMessage }
+            ]);
+
+            // Sanitize and Parse JSON
+            const jsonStr = response.content.replace(/```json/g, '').replace(/```/g, '').trim();
+            const result = JSON.parse(jsonStr);
+
+            return {
+                approved: result.approved,
+                confidence: result.confidence,
+                reasoning: result.reasoning
+            };
+
+        } catch (error: any) {
+            console.error('[AiJudge] Evaluation failed:', error);
+            return {
+                approved: false,
+                confidence: 0.0,
+                reasoning: `AI Evaluation Error: ${error.message}`
+            };
+        }
     }
 }
+
+export const aiJudgeService = AiJudgeService.getInstance();

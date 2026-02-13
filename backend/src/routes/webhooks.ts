@@ -1,25 +1,15 @@
 import { FastifyInstance } from 'fastify';
-import { githubService } from '../services/githubService';
+import { Octokit } from '@octokit/rest';
 import Bounty from '../models/Bounty';
+
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 export default async function (fastify: FastifyInstance) {
 
-    // GitHub Webhook
-    fastify.post('/github', async (request, reply) => {
-        const event = request.headers['x-github-event'] as string;
-        const payload = request.body as any;
 
-        // Verify Signature (skipped for MVP, but crucial for prod)
-        // verifySignature(request);
+    // GitHub Webhook - HANDLED BY PROBOT NOW
+    // fastify.post('/github', ... );
 
-        try {
-            await githubService.handleWebhook(event, payload);
-            return { status: 'ok' };
-        } catch (error) {
-            console.error(error);
-            return reply.code(500).send({ error: 'Webhook processing failed' });
-        }
-    });
 
     // PingPay Webhook (Payment Confirmation)
     fastify.post('/pingpay', async (request, reply) => {
@@ -34,12 +24,18 @@ export default async function (fastify: FastifyInstance) {
 
             const bounty = await Bounty.findOne({ repoFullName, issueNumber });
             if (bounty) {
-                bounty.status = 'ACTIVE';
+                bounty.status = 'active';
                 bounty.paymentSessionId = session.id;
                 await bounty.save();
 
                 // Notify on GitHub
-                await githubService.reply(repoFullName, issueNumber, "✅ **Bounty Secured!**\n\nFunds are locked. Happy hunting!");
+                const [owner, repo] = repoFullName.split('/');
+                await octokit.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: issueNumber,
+                    body: "✅ **Bounty Secured!**\n\nFunds have been deposited and locked. Happy hunting! 🏹"
+                });
             }
         }
 

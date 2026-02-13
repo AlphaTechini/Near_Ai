@@ -10,11 +10,17 @@ if (!PINGPAY_API_KEY) {
     console.warn('PINGPAY_API_KEY is not set. Payments will fail.');
 }
 
-interface CreateCheckoutParams {
-    amount: string; // Amount in atomic units (e.g., 6 decimals for USDC)
+export interface BountyMetadata {
     issueId: number;
     issueNumber: number;
     repoFullName: string;
+    bountyAmount: string; // The amount the funder is paying
+    action: 'fund_bounty';
+}
+
+interface CreateCheckoutParams {
+    amount: string; // Amount in atomic units (e.g., 6 decimals for USDC)
+    metadata: BountyMetadata;
     successUrl?: string;
     cancelUrl?: string;
 }
@@ -34,9 +40,7 @@ export const pingPayService = {
                 successUrl: params.successUrl || "https://github.com", // Should redirect back to issue or a thank you page
                 cancelUrl: params.cancelUrl || "https://github.com",
                 metadata: {
-                    issueId: params.issueId.toString(),
-                    issueNumber: params.issueNumber.toString(),
-                    repoFullName: params.repoFullName,
+                    ...params.metadata,
                     type: "bounty_deposit"
                 }
             };

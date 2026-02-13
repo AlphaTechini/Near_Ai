@@ -1,143 +1,46 @@
 <script lang="ts">
   import Navbar from '../components/Navbar.svelte';
   import Hero from '../components/Hero.svelte';
-  import CTA from '../components/CTA.svelte';
+  import Friction from '../components/Friction.svelte';
   import Footer from '../components/Footer.svelte';
 </script>
 
 <svelte:head>
-  <title>GitPay Agent | Automated Bounty Payouts</title>
+  <title>GitPay Bot Hero Section</title>
 </svelte:head>
 
-<div class="page">
-  <Navbar />
+<div class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden min-h-screen relative flex flex-col">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 bg-cyber-grid pointer-events-none z-0"></div>
+    <div class="scanlines fixed inset-0 z-0 h-screen"></div>
+    <!-- Ambient Glows -->
+    <div class="fixed top-[-10%] right-[-10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[10%] left-[-5%] w-[250px] h-[250px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <Navbar />
   
-  <main>
-    <Hero />
-
-    <!-- FEATURES -->
-    <section id="features" class="section container">
-      <div class="section-header">
-        <h2 class="section-title">The New Standard for <span class="gradient-text">Bounties</span></h2>
-        <p class="section-subtitle">We replaced the "Trust Me Bro" model with cryptographic certainty.</p>
-      </div>
-      
-      <div class="features-grid">
-        <div class="feature-card glass">
-          <div class="feature-icon-wrapper">
-             <div class="feature-icon">🤖</div>
-          </div>
-          <h3>AI-Powered Judge</h3>
-          <p>Our agent runs your test suite in a Secure Enclave. If code passes, it's approved instantly. No human bias.</p>
-        </div>
-        <div class="feature-card glass">
-          <div class="feature-icon-wrapper">
-             <div class="feature-icon">⚡</div>
-          </div>
-          <h3>Instant Settlement</h3>
-          <p>Funds are held in a smart contract and released the second the agent verifies the work. 0ms delay.</p>
-        </div>
-        <div class="feature-card glass">
-          <div class="feature-icon-wrapper">
-             <div class="feature-icon">🔒</div>
-          </div>
-          <h3>Private Repositories</h3>
-          <p>Verify code in private repos without granting read access to humans. Keep your IP safe while outsourcing.</p>
-        </div>
-        <div class="feature-card glass">
-          <div class="feature-icon-wrapper">
-             <div class="feature-icon">🌐</div>
-          </div>
-          <h3>Global Payouts</h3>
-          <p>Pay verified machines or humans anywhere in the world. USDC, ETH, or NEAR. No border restrictions.</p>
-        </div>
-      </div>
-    </section>
-
-    <CTA />
-  </main>
+    <main class="flex-grow flex flex-col relative z-10 w-full max-w-md mx-auto">
+        <Hero />
+        <Friction />
+    </main>
   
   <Footer />
+    
+    <!-- Fixed Bottom CTA (from the designs, ensuring it's present) -->
+    <div class="fixed bottom-6 left-0 right-0 px-6 z-50 pointer-events-none">
+        <div class="max-w-md mx-auto pointer-events-auto">
+            <button class="w-full bg-primary hover:bg-cyan-400 text-background-dark font-bold font-mono py-4 px-6 rounded-xl shadow-[0_0_20px_rgba(37,192,244,0.4)] flex items-center justify-between group transition-all transform active:scale-95">
+                <span class="flex items-center">
+                    <span class="material-icons-round mr-2 animate-pulse">terminal</span>
+                    INSTALL_BOT
+                </span>
+                <span class="group-hover:translate-x-1 transition-transform">-&gt;</span>
+            </button>
+        </div>
+    </div>
 </div>
 
 <style>
-  .section {
-    padding: var(--spacing-3xl) var(--spacing-lg);
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: var(--spacing-3xl);
-  }
-
-  .section-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .section-subtitle {
-    font-size: 1.25rem;
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-xl);
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .feature-card {
-    padding: var(--spacing-2xl);
-    border-radius: var(--radius-xl);
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    transition: all var(--transition-medium);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--color-accent-primary);
-    box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
-  }
-
-  .feature-icon-wrapper {
-    width: 64px;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-lg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .feature-icon {
-    font-size: 2rem;
-  }
-
-  .feature-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
-    font-weight: 700;
-    color: var(--color-text-primary);
-  }
-
-  .feature-card p {
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    font-size: 0.95rem;
-  }
-
-  .glass {
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
-  }
+  /* Global page styles handled by Tailwind classes in markup */
 </style>
