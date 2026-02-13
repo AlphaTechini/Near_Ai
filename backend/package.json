@@ -20,6 +20,7 @@
     "mongoose": "^8.2.1",
     "near-api-js": "^6.0.0",
     "openai": "^6.18.0",
+    "probot": "^13.0.1",
     "viem": "^2.45.3"
   },
   "devDependencies": {

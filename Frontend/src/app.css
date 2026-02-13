@@ -285,7 +285,11 @@ p {
 }
 
 .glass-card {
-  @apply bg-background-dark/80 backdrop-blur-md border border-primary/20 shadow-[0_0_15px_-3px_rgba(37, 192, 244, 0.1)];
+  background-color: rgba(5, 5, 7, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 15px -3px rgba(37, 192, 244, 0.1);
 }
 
 .neon-text {
