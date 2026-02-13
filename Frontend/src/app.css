@@ -33,6 +33,8 @@
   --spacing-md: 2rem;
   --spacing-lg: 4rem;
   --spacing-xl: 8rem;
+  --spacing-2xl: 10rem;
+  --spacing-3xl: 12rem;
 
   /* Radius */
   --radius-sm: 8px;
@@ -150,6 +152,7 @@ p {
   transition: all 0.2s ease;
   cursor: pointer;
   border: 1px solid transparent;
+  text-decoration: none;
 }
 
 .btn-primary {
