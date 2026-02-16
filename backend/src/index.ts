@@ -66,15 +66,7 @@ app.get('/health', async (request, reply) => {
 const start = async () => {
   console.log("🚀 Starting GitPay Backend...");
 
-  // 1. Database Connection (Make Non-Fatal for Initial Setup)
-  try {
-    await connectDB();
-    console.log("✅ Database Logic initialized");
-  } catch (dbError: any) {
-    console.warn("⚠️ Database Connection Failed (Server continuing for setup mode):", dbError.message);
-  }
-
-  // 2. Start Server
+  // 1. Start Server (FIRST to bind port)
   try {
     const port = parseInt(process.env.PORT || '3000');
     await app.listen({ port, host: '0.0.0.0' });
@@ -84,6 +76,14 @@ const start = async () => {
     app.log.error(err);
     console.error("❌ Fatal Server Error (Port busy?):", err);
     process.exit(1);
+  }
+
+  // 2. Database Connection (Non-Blocking / After Start)
+  try {
+    await connectDB();
+    console.log("✅ Database Logic initialized");
+  } catch (dbError: any) {
+    console.warn("⚠️ Database Connection Failed (Server continuing for setup mode):", dbError.message);
   }
 };
 start();
