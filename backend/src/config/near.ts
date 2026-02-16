@@ -1,4 +1,4 @@
-import { connect, Near, keyStores, utils } from 'near-api-js';
+import { connect, Near, keyStores, utils, Account } from 'near-api-js';
 
 export interface NearConfig {
     networkId: string;
@@ -47,12 +47,20 @@ export async function initNearConnection(): Promise<Near> {
     const keyPair = utils.KeyPair.fromString(privateKey as any);
     await keyStore.setKey(config.networkId, accountId, keyPair);
 
-    // Cast to any to bypass strict type checking - the config is correct for v6
-    return connect({
+    const nearConfig = {
         networkId: config.networkId,
         nodeUrl: config.nodeUrl,
         keyStore,
-    } as any);
+    };
+
+    return connect(nearConfig as any);
+}
+
+export async function getAccount(): Promise<Account> {
+    const near = await initNearConnection();
+    const accountId = process.env.NEAR_ACCOUNT_ID;
+    if (!accountId) throw new Error("NEAR_ACCOUNT_ID not set");
+    return await near.account(accountId);
 }
 
 export { testnetConfig, mainnetConfig };

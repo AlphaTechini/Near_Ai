@@ -31,11 +31,23 @@ const ERC20_ABI = [
     }
 ];
 
-export async function releasePayout(hunterAddress: string, amountUSD: string, nearAccount?: Account) {
-    console.log(`💸 Initiating Payout of $${amountUSD} to ${hunterAddress} on Base...`);
+// Token Mapping (Testnet/Sepolia)
+const TOKEN_ADDRESSES: { [key: string]: string } = {
+    'USDC': "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    'ETH': "NATIVE", // Special flag for native transfer
+    'NEAR': "0x_NEAR_ON_BASE_MOCK", // Placeholder if we bridge NEAR
+};
 
+export async function releasePayout(hunterAddress: string, amount: string, token: string, nearAccount?: Account) {
+    console.log(`💸 Initiating Payout of ${amount} ${token} to ${hunterAddress} on Base...`);
+
+    const tokenAddress = TOKEN_ADDRESSES[token.toUpperCase()];
+    if (!tokenAddress) {
+        throw new Error(`Unsupported token: ${token}`);
+    }
+
+    // If no account provided, fallback to mock (or throw if strict)
     if (!nearAccount) {
-        // MVP fallback: log and return a placeholder tx hash
         console.warn('[MPC] No NEAR account provided for MPC signing. Returning mock tx hash for MVP.');
         return '0x_mock_tx_hash_mvp';
     }
@@ -44,49 +56,62 @@ export async function releasePayout(hunterAddress: string, amountUSD: string, ne
         // 1. Initialize Chain Signature Contract
         const signetContract = new contracts.ChainSignatureContract({
             networkId: NETWORK_ID,
-            contractId: MPC_CONTRACT_ID,
-            accountId: nearAccount.accountId,
-            account: nearAccount
+            contractId: MPC_CONTRACT_ID
         });
 
         // 2. Initialize EVM Adapter
         const evmAdapter = new chainAdapters.evm.EVM({
-            publicClient,
+            publicClient: publicClient as any,
             contract: signetContract
         });
 
-        // 3. Derive Address (Optional: verify sender)
-        const derivationPath = 'ethereum,1'; // Fixed path for this agent
+        // 3. Derive Address
+        const derivationPath = 'ethereum,1';
         const { address } = await evmAdapter.deriveAddressAndPublicKey(nearAccount.accountId, derivationPath);
         console.log(`🤖 MPC Agent Address: ${address}`);
 
-        // 4. Encode Transaction Data (ERC20 Transfer)
-        const amount = parseUnits(amountUSD, 6); // USDC has 6 decimals
-        const data = encodeFunctionData({
-            abi: ERC20_ABI,
-            functionName: 'transfer',
-            args: [hunterAddress as `0x${string}`, amount]
-        });
+        let transactionData;
 
-        // 5. Prepare Transaction
-        // We construct a transaction to the USDC contract, with the transfer data
-        const { transaction, hashesToSign } = await evmAdapter.prepareTransactionForSigning({
-            from: address,
-            to: USDC_ADDRESS,
-            data: data,
-            value: 0n // 0 ETH value, we are sending Tokens
-        });
+        // 4. Construct Transaction (Native vs ERC20)
+        if (tokenAddress === 'NATIVE') {
+            // Native ETH Transfer
+            const amountWei = parseUnits(amount, 18);
+            transactionData = {
+                from: address as `0x${string}`,
+                to: hunterAddress as `0x${string}`,
+                value: amountWei,
+                data: '0x' as `0x${string}`
+            };
+        } else {
+            // ERC20 Transfer
+            const amountAtomic = parseUnits(amount, 6); // Assuming USDC 6 decimals. TODO: Map decimals
+            const data = encodeFunctionData({
+                abi: ERC20_ABI,
+                functionName: 'transfer',
+                args: [hunterAddress as `0x${string}`, amountAtomic]
+            });
 
-        // 6. Sign Transaction (MPC Magic)
-        // This will prompt the NEAR network to sign
+            transactionData = {
+                from: address as `0x${string}`,
+                to: tokenAddress as `0x${string}`, // To Token Contract
+                value: 0n,
+                data: data
+            };
+        }
+
+        // 5. Prepare Payload
+        const { transaction, hashesToSign } = await evmAdapter.prepareTransactionForSigning(transactionData);
+
+        // 6. Sign
         console.log("✍️ Requesting Signature from NEAR Validators...");
         const rsvSignatures = await signetContract.sign({
             payloads: hashesToSign,
             path: derivationPath,
             keyType: "Ecdsa",
+            signerAccount: nearAccount
         });
 
-        // 7. Finalize & Broadcast
+        // 7. Broadcast
         const signedTransaction = evmAdapter.finalizeTransactionSigning({
             transaction,
             rsvSignatures
@@ -104,7 +129,7 @@ export async function releasePayout(hunterAddress: string, amountUSD: string, ne
     }
 }
 
-// Exported service object for use in bot.ts
+// Exported service object
 export const mpcSignerService = {
     releasePayout,
 };
