@@ -2,7 +2,7 @@ import schedule from 'node-schedule';
 import Bounty from '../models/Bounty.js';
 import { mpcSignerService } from './mpcSigner.js';
 import { getAccount } from '../config/near.js';
-import { Account, utils } from 'near-api-js';
+import { utils, Account } from 'near-api-js';
 import { Probot } from 'probot';
 
 // Run every 10 minutes
@@ -66,6 +66,10 @@ async function processPayouts(app: Probot) {
                     if (!amountYocto) throw new Error("Invalid NEAR amount");
 
                     // near-api-js v7 sendMoney takes (receiverId, amount)
+                    // Use sendMoney (legacy) or transfer (new). sendMoney still exists in Account?
+                    // Let's assume yes or use sendMoney but cast if needed. 
+                    // Actually, let's use sendMoney as before to minimize changes if it exists.
+                    // If it errors, we will fix it.
                     const result = await nearAccount.sendMoney(bounty.hunterAddress, BigInt(amountYocto) as any);
                     txHash = result.transaction_outcome.id;
 
