@@ -2,8 +2,6 @@ import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import connectDB from './db';
 import dotenv from 'dotenv';
-import intentRoutes from './routes/intents';
-import watcher from './services/watcher';
 import { nearAiService } from './services/nearAiService';
 import { Server, IncomingMessage, ServerResponse } from "http";
 import { createNodeMiddleware, createProbot } from "probot";
@@ -23,9 +21,10 @@ app.register(cors, {
 });
 
 // Register Custom Routes
-app.register(intentRoutes);
-app.register(import('./routes/bounties'), { prefix: '/bounties' });
-app.register(import('./routes/webhooks'), { prefix: '/webhooks' });
+// Custom Routes (Legacy - Disabled for Bot-only mode)
+// app.register(intentRoutes);
+// app.register(import('./routes/bounties'), { prefix: '/bounties' });
+// app.register(import('./routes/webhooks'), { prefix: '/webhooks' });
 
 // Probot Middleware for GitHub Webhooks
 // Mounts on /api/github/webhooks by default or we can specify

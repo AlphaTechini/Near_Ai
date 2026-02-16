@@ -304,4 +304,6 @@ cc: @${bounty.depositor} (Bounty Creator)
             app.log.error(error);
         }
     });
+    // Start the Payout Scheduler
+    startScheduler(app);
 };

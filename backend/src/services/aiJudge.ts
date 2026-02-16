@@ -92,6 +92,58 @@ ${truncatedDiff}`;
             };
         }
     }
+
+    /**
+     * Strict Evaluation for Bot Claims. 
+     * Returns a raw string prompt response with strict formatting (PASSED/FAILED).
+     */
+    async evaluateStrict(issueDescription: string, prDiff: string): Promise<string> {
+        console.log('[AiJudge] Strict Evaluation...');
+        if (!prDiff || prDiff.trim() === '') {
+            return "FAILED\nPR Diff is empty.";
+        }
+
+        const MAX_DIFF_LENGTH = 15000;
+        const truncatedDiff = prDiff.length > MAX_DIFF_LENGTH
+            ? prDiff.substring(0, MAX_DIFF_LENGTH) + "\n...[Diff Truncated]"
+            : prDiff;
+
+        const systemPrompt = `You are a strict code verification engine.
+Your goal is to verify if a Pull Request (PR) solves the Issue Description.
+
+Input:
+1. Issue Requirements
+2. PR Diff
+
+Output Format:
+Line 1: Either "PASSED" or "FAILED" (uppercase, nothing else).
+Line 2+: Concise reasoning for the verdict.
+
+Rules:
+- PASSED only if the code completely and correctly solves the issue.
+- FAILED if there are bugs, security issues, or it's incomplete.
+- FAILED if the diff is irrelevant.`;
+
+        const userMessage = `Issue Requirements:
+${issueDescription}
+
+PR Diff:
+${truncatedDiff}`;
+
+        try {
+            const response = await nearAiService.chat([
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userMessage }
+            ]);
+
+            // Clean up Markdown code blocks if present
+            return response.content.replace(/```/g, '').trim();
+
+        } catch (error: any) {
+            console.error('[AiJudge] Strict Evaluation failed:', error);
+            return "FAILED\nAI Service Error.";
+        }
+    }
 }
 
 export const aiJudgeService = AiJudgeService.getInstance();
