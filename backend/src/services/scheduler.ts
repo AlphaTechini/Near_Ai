@@ -1,7 +1,7 @@
 import schedule from 'node-schedule';
-import Bounty from '../models/Bounty';
-import { mpcSignerService } from './mpcSigner';
-import { getAccount } from '../config/near';
+import Bounty from '../models/Bounty.js';
+import { mpcSignerService } from './mpcSigner.js';
+import { getAccount } from '../config/near.js';
 import { Account, utils } from 'near-api-js';
 import { Probot } from 'probot';
 

@@ -1,4 +1,6 @@
-import { connect, Near, keyStores, utils, Account } from 'near-api-js';
+import { JsonRpcProvider, Account, KeyPair } from 'near-api-js';
+// Skill suggests KeyPairSigner, let's use that if possible.
+// But wait, KeyPairSigner might be in 'near-api-js'. SKILL says: import { KeyPairSigner } from "near-api-js";
 
 export interface NearConfig {
     networkId: string;
@@ -33,10 +35,12 @@ export function getNetworkId(): 'testnet' | 'mainnet' {
     return process.env.NODE_ENV === 'production' ? 'mainnet' : 'testnet';
 }
 
-export async function initNearConnection(): Promise<Near> {
-    const config = getNearConfig();
-    const keyStore = new keyStores.InMemoryKeyStore();
+// Deprecated: initNearConnection was returning a Near object which doesn't exist mainly in v7 the same way
+// We will replace usage of this with specific provider or account getters if needed.
+// But getAccount() is the main consumer.
 
+export async function getAccount(): Promise<Account> {
+    const config = getNearConfig();
     const accountId = process.env.NEAR_ACCOUNT_ID;
     const privateKey = process.env.NEAR_PRIVATE_KEY;
 
@@ -44,23 +48,20 @@ export async function initNearConnection(): Promise<Near> {
         throw new Error('NEAR_ACCOUNT_ID and NEAR_PRIVATE_KEY must be set in environment');
     }
 
-    const keyPair = utils.KeyPair.fromString(privateKey as any);
-    await keyStore.setKey(config.networkId, accountId, keyPair);
+    const provider = new JsonRpcProvider({ url: config.nodeUrl });
+    const keyPair = KeyPair.fromString(privateKey);
+    // In v7, Account constructor takes (connection, accountId) or similar?
+    // Skill says: new Account(accountId, provider, [nothing?]) then setSigner?
+    // Or new Account(accountId, provider)
+    // Skill line 101: const account = new Account(accountId, provider, privateKey? No, signer? No it says privateKey in comments but then line 308 says new KeyPairSigner(keyPair))
 
-    const nearConfig = {
-        networkId: config.networkId,
-        nodeUrl: config.nodeUrl,
-        keyStore,
-    };
+    // Let's check the Skill snippet carefully:
+    // const account = new Account(connection, accountId) -- OLD
+    // NEW: const account = new Account(accountId, provider, keyPairString?)
+    // Line 27: new Account("my-account", provider, "ed25519:..." as KeyPairString)
 
-    return connect(nearConfig as any);
-}
-
-export async function getAccount(): Promise<Account> {
-    const near = await initNearConnection();
-    const accountId = process.env.NEAR_ACCOUNT_ID;
-    if (!accountId) throw new Error("NEAR_ACCOUNT_ID not set");
-    return await near.account(accountId);
+    // So we can pass the key string directly!
+    return new Account(accountId, provider, privateKey);
 }
 
 export { testnetConfig, mainnetConfig };

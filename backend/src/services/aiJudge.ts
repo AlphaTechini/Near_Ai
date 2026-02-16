@@ -1,4 +1,4 @@
-import { nearAiService } from './nearAiService';
+import { nearAiService } from './nearAiService.js';
 
 export interface VerificationResult {
     approved: boolean;

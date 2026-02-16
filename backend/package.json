@@ -2,11 +2,12 @@
   "name": "intent-runtime-backend",
   "version": "1.0.0",
   "description": "Backend for Intent Runtime",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsup"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -19,7 +20,7 @@
     "ethers": "^6.16.0",
     "fastify": "^4.26.2",
     "mongoose": "^8.2.1",
-    "near-api-js": "^6.0.0",
+    "near-api-js": "^7.1.1",
     "node-schedule": "^2.1.1",
     "openai": "^6.18.0",
     "probot": "^13.0.1",
@@ -31,6 +32,7 @@
     "@types/node-schedule": "^2.1.8",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.4.2"
   }
 }

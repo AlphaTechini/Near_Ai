@@ -1,11 +1,11 @@
 import { Probot, Context } from "probot";
-import Bounty from "./models/Bounty";
-import { pingPayService, BountyMetadata } from "./services/pingPayService";
-import { aiJudgeService } from "./services/aiJudge";
-import { mpcSignerService } from "./services/mpcSigner";
-import { startScheduler } from "./services/scheduler";
-import { getAccount } from "./config/near";
-import * as T from "./prompt_template";
+import Bounty from "./models/Bounty.js";
+import { pingPayService, BountyMetadata } from "./services/pingPayService.js";
+import { aiJudgeService } from "./services/aiJudge.js";
+import { mpcSignerService } from "./services/mpcSigner.js";
+import { startScheduler } from "./services/scheduler.js";
+import { getAccount } from "./config/near.js";
+import * as T from "./prompt_template.js";
 
 export default (app: Probot) => {
     app.log.info("GitPay Bot is running!");

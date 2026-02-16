@@ -1,11 +1,25 @@
 import Fastify, { FastifyInstance } from 'fastify';
+
+// DEBUG: Immediate Log
+console.log("🛑 ENTRY POINT REACHED: index.ts loaded");
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});
+
 import cors from '@fastify/cors';
-import connectDB from './db';
+import connectDB from './db.js';
 import dotenv from 'dotenv';
-import { nearAiService } from './services/nearAiService';
+import { nearAiService } from './services/nearAiService.js';
 import { Server, IncomingMessage, ServerResponse } from "http";
 import { createNodeMiddleware, createProbot } from "probot";
-import myProbotApp from "./bot";
+import myProbotApp from "./bot.js";
 
 dotenv.config();
 
