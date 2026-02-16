@@ -45,25 +45,27 @@ app.route({
   }
 });
 
-// Database connection
-connectDB().then(() => {
-  // Start Watcher (optional now, since we are event-driven)
-  // watcher.start(5000); 
-  console.log("Connected to MongoDB");
-});
+// Database connection - Move inside start for better flow control
+// connectDB().then(() => { ... });
 
 app.get('/health', async (request, reply) => {
   return { status: 'ok', mode: 'gitpay-lite' };
 });
 
 const start = async () => {
+  console.log("🚀 Starting GitPay Backend...");
   try {
+    // Connect to DB first
+    await connectDB();
+    console.log("✅ Database Logic initialized");
+
     const port = parseInt(process.env.PORT || '3000');
     await app.listen({ port, host: '0.0.0.0' });
-    console.log(`Server is running on port ${port}`);
+    console.log(`✅ Server is running on port ${port}`);
     console.log(`GitHub Webhook URL: http://localhost:${port}/api/github/webhooks`);
   } catch (err) {
     app.log.error(err);
+    console.error("❌ Fatal Startup Error:", err);
     process.exit(1);
   }
 };
