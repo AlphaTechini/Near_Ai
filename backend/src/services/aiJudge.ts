@@ -100,7 +100,7 @@ ${truncatedDiff}`;
     async evaluateStrict(issueDescription: string, prDiff: string): Promise<string> {
         console.log('[AiJudge] Strict Evaluation...');
         if (!prDiff || prDiff.trim() === '') {
-            return "FAILED\nPR Diff is empty.";
+            return "FAILED\nReasoning: The Pull Request diff is empty.";
         }
 
         const MAX_DIFF_LENGTH = 15000;
@@ -117,12 +117,13 @@ Input:
 
 Output Format:
 Line 1: Either "PASSED" or "FAILED" (uppercase, nothing else).
-Line 2+: Concise reasoning for the verdict.
+Line 2+: Detailed, step-by-step reasoning for *why* it passed or failed. Explain the analysis.
 
 Rules:
 - PASSED only if the code completely and correctly solves the issue.
 - FAILED if there are bugs, security issues, or it's incomplete.
-- FAILED if the diff is irrelevant.`;
+- FAILED if the diff is irrelevant.
+- Provide clear, constructive feedback in the reasoning.`;
 
         const userMessage = `Issue Requirements:
 ${issueDescription}
@@ -141,7 +142,7 @@ ${truncatedDiff}`;
 
         } catch (error: any) {
             console.error('[AiJudge] Strict Evaluation failed:', error);
-            return "FAILED\nAI Service Error.";
+            return "FAILED\nReasoning: AI Service Error.";
         }
     }
 }

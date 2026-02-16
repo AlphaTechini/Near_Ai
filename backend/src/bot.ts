@@ -189,6 +189,10 @@ export default (app: Probot) => {
                     body: `
 ### ✅ Verification Passed!
 Auto-approval successful for @${sender.login}.
+
+**AI Analysis**:
+${reasoning}
+
 💰 **Payout**: $${bounty.amount} ${bounty.token}
 📫 **Address**: \`${walletAddress}\`
 📅 **Scheduled For**: ${payoutDate.toLocaleString()} (24h delay).
