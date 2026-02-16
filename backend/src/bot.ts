@@ -67,7 +67,11 @@ export default (app: Probot) => {
             });
             await newBounty.save();
 
-            // 2. Generate PingPay Link
+            // 2. Derive MPC Address (Receiver)
+            const nearAccount = await getAccount();
+            const receiverAddress = await mpcSignerService.getMpcAddress(nearAccount);
+
+            // 3. Generate PingPay Link
             const amountAtomic = (price * 1_000_000).toString(); // USDC 6 decimals
             const metadata: BountyMetadata = {
                 issueId: issue.id,
@@ -81,7 +85,8 @@ export default (app: Probot) => {
                 amount: amountAtomic,
                 metadata,
                 successUrl: issue.html_url,
-                cancelUrl: issue.html_url
+                cancelUrl: issue.html_url,
+                receiverAddress
             });
 
             // 3. Reply with Link

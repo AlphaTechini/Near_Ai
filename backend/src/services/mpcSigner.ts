@@ -38,7 +38,24 @@ const TOKEN_ADDRESSES: { [key: string]: string } = {
     'NEAR': "0x_NEAR_ON_BASE_MOCK", // Placeholder if we bridge NEAR
 };
 
-export async function releasePayout(hunterAddress: string, amount: string, token: string, nearAccount?: Account) {
+// Helper to derive address without sending a tx
+export async function getMpcAddress(nearAccount: Account): Promise<string> {
+    const signetContract = new contracts.ChainSignatureContract({
+        networkId: NETWORK_ID,
+        contractId: MPC_CONTRACT_ID
+    });
+
+    const evmAdapter = new chainAdapters.evm.EVM({
+        publicClient: publicClient as any,
+        contract: signetContract
+    });
+
+    const derivationPath = 'ethereum,1';
+    const { address } = await evmAdapter.deriveAddressAndPublicKey(nearAccount.accountId, derivationPath);
+    return address;
+}
+
+export async function releasePayout(hunterAddress: string, amount: string, token: string, nearAccount?: Account): Promise<string> {
     console.log(`💸 Initiating Payout of ${amount} ${token} to ${hunterAddress} on Base...`);
 
     const tokenAddress = TOKEN_ADDRESSES[token.toUpperCase()];
@@ -121,7 +138,13 @@ export async function releasePayout(hunterAddress: string, amount: string, token
         const txHash = await evmAdapter.broadcastTx(signedTransaction);
 
         console.log(`✅ Payout Successful! Tx Hash: ${txHash}`);
-        return txHash;
+
+        // Viem might return a string or an object depending on the client config. 
+        // The error says it returns { hash: ... }
+        if (typeof txHash === 'object' && 'hash' in txHash) {
+            return (txHash as any).hash;
+        }
+        return txHash as string;
 
     } catch (error: any) {
         console.error("❌ MPC Payout Failed:", error);
@@ -132,5 +155,6 @@ export async function releasePayout(hunterAddress: string, amount: string, token
 // Exported service object
 export const mpcSignerService = {
     releasePayout,
+    getMpcAddress
 };
 

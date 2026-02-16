@@ -23,6 +23,7 @@ interface CreateCheckoutParams {
     metadata: BountyMetadata;
     successUrl?: string;
     cancelUrl?: string;
+    receiverAddress?: string; // Where funds should land (MPC Wallet)
 }
 
 export const pingPayService = {
@@ -34,8 +35,9 @@ export const pingPayService = {
             const payload = {
                 amount: params.amount,
                 asset: {
-                    chain: "NEAR", // Accepting funds on NEAR (or use Base if supported/bridgeable)
-                    symbol: "USDC" // Assuming USDC
+                    chain: "NEAR",
+                    symbol: "USDC",
+                    receiver: params.receiverAddress // PingPay supported field? Assuming yes for custom checkout
                 },
                 successUrl: params.successUrl || "https://github.com", // Should redirect back to issue or a thank you page
                 cancelUrl: params.cancelUrl || "https://github.com",

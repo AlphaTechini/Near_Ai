@@ -57,6 +57,9 @@ importers:
       '@types/node':
         specifier: ^20.11.24
         version: 20.19.30
+      '@types/node-schedule':
+        specifier: ^2.1.8
+        version: 2.1.8
       nodemon:
         specifier: ^3.1.0
         version: 3.1.11
@@ -883,6 +886,9 @@ packages:
 
   '@types/mysql@2.15.26':
     resolution: {integrity: sha512-DSLCOXhkvfS5WNNPbfn2KdICAmk8lLc+/PNvnPnF7gOdMZCxopXduqv0OQ13y/yA/zXTSikZZqVgybUxOEg6YQ==}
+
+  '@types/node-schedule@2.1.8':
+    resolution: {integrity: sha512-k00g6Yj/oUg/CDC+MeLHUzu0+OFxWbIqrFfDiLi6OPKxTujvpv29mHGM8GtKr7B+9Vv92FcK/8mRqi1DK5f3hA==}
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
@@ -3568,6 +3574,10 @@ snapshots:
   '@types/ms@2.1.0': {}
 
   '@types/mysql@2.15.26':
+    dependencies:
+      '@types/node': 20.19.30
+
+  '@types/node-schedule@2.1.8':
     dependencies:
       '@types/node': 20.19.30
 

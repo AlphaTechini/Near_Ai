@@ -2,7 +2,7 @@ import schedule from 'node-schedule';
 import Bounty from '../models/Bounty';
 import { mpcSignerService } from './mpcSigner';
 import { getAccount } from '../config/near';
-import { Account } from 'near-api-js';
+import { Account, utils } from 'near-api-js';
 import { Probot } from 'probot';
 
 // Run every 10 minutes
@@ -32,7 +32,6 @@ async function processPayouts(app: Probot) {
             nearAccount = await getAccount();
         } catch (e) {
             console.error("Failed to get NEAR account for scheduler:", e);
-            // We might still proceed if MPC mock mode is enabled, but better to warn.
         }
 
         for (const bounty of dueBounties) {
@@ -42,25 +41,42 @@ async function processPayouts(app: Probot) {
                     continue;
                 }
 
-                // 1. Gas Check (MVP: Check NEAR balance of Agent)
+                // 1. Gas Check & Account Check
                 if (nearAccount) {
                     const balance = await nearAccount.getAccountBalance();
-                    // Threshold: 0.1 NEAR (approx)
-                    if (BigInt(balance.available) < BigInt("100000000000000000000000")) {
+                    if (BigInt(balance.available) < BigInt("100000000000000000000000")) { // 0.1 NEAR
                         console.error(`❌ Insufficient Gas for Bounty ${bounty._id}. Skipping.`);
                         continue;
                     }
+                } else {
+                    console.error("❌ No NEAR Account available. Skipping payout.");
+                    continue;
                 }
 
                 console.log(`Processing payout for ${bounty._id} to ${bounty.hunterAddress} (${bounty.amount} ${bounty.token})`);
 
                 // 2. Execute Payout
-                const txHash = await mpcSignerService.releasePayout(
-                    bounty.hunterAddress,
-                    bounty.amount.toString(),
-                    bounty.token, // Dynamic Token
-                    nearAccount
-                );
+                let txHash = "";
+
+                if (bounty.token.toUpperCase() === 'NEAR') {
+                    console.log(`Processing NATIVE NEAR payout for ${bounty._id} to ${bounty.hunterAddress}`);
+                    // Native NEAR Transfer
+                    const amountYocto = utils.format.parseNearAmount(bounty.amount.toString());
+                    if (!amountYocto) throw new Error("Invalid NEAR amount");
+
+                    // near-api-js v7 sendMoney takes (receiverId, amount)
+                    const result = await nearAccount.sendMoney(bounty.hunterAddress, BigInt(amountYocto) as any);
+                    txHash = result.transaction_outcome.id;
+
+                } else {
+                    // MPC / EVM Transfer (USDC, etc.)
+                    txHash = await mpcSignerService.releasePayout(
+                        bounty.hunterAddress,
+                        bounty.amount.toString(),
+                        bounty.token,
+                        nearAccount
+                    );
+                }
 
                 // 3. Update Status
                 bounty.status = 'paid';
@@ -82,7 +98,7 @@ async function processPayouts(app: Probot) {
                         body: `
 ### 💸 Payout Sent!
 Transaction has been broadcast successfully.
-🔗 **Tx Hash**: [View on Explorer](https://sepolia.basescan.org/tx/${txHash})
+🔗 **Tx Hash**: [View on Explorer](https://nearblocks.io/txns/${txHash}) (or BaseScan for MPC)
 
 cc: @${bounty.hunter} @${bounty.depositor}
                         `
