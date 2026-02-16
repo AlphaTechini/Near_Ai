@@ -28,11 +28,18 @@ app.register(cors, {
 
 // Probot Middleware for GitHub Webhooks
 // Mounts on /api/github/webhooks by default or we can specify
-const probot = createProbot();
-const probotMiddleware = createNodeMiddleware(myProbotApp, {
-  probot,
-  webhooksPath: '/api/github/webhooks'
-});
+let probotMiddleware: any;
+
+try {
+  const probot = createProbot();
+  probotMiddleware = createNodeMiddleware(myProbotApp, {
+    probot,
+    webhooksPath: '/api/github/webhooks'
+  });
+  console.log("✅ Probot initialized successfully");
+} catch (error) {
+  console.error("❌ Failed to initialize Probot (Check APP_ID/PRIVATE_KEY):", error);
+}
 
 // Fastify doesn't natively support Express/Node middleware easily without a plugin or wrapper
 // But for MVP, we can just route the specific path to it
@@ -40,8 +47,12 @@ app.route({
   method: ['POST'],
   url: '/api/github/webhooks',
   handler: (req, res) => {
-    // @ts-ignore - Adapter type mismatch hack for MVP
-    probotMiddleware(req.raw, res.raw);
+    if (probotMiddleware) {
+      // @ts-ignore - Adapter type mismatch hack for MVP
+      probotMiddleware(req.raw, res.raw);
+    } else {
+      res.status(500).send("Probot not initialized");
+    }
   }
 });
 
@@ -54,20 +65,25 @@ app.get('/health', async (request, reply) => {
 
 const start = async () => {
   console.log("🚀 Starting GitPay Backend...");
+
+  // 1. Database Connection (Make Non-Fatal for Initial Setup)
   try {
-    // Connect to DB first
     await connectDB();
     console.log("✅ Database Logic initialized");
+  } catch (dbError: any) {
+    console.warn("⚠️ Database Connection Failed (Server continuing for setup mode):", dbError.message);
+  }
 
+  // 2. Start Server
+  try {
     const port = parseInt(process.env.PORT || '3000');
     await app.listen({ port, host: '0.0.0.0' });
     console.log(`✅ Server is running on port ${port}`);
-    console.log(`GitHub Webhook URL: http://localhost:${port}/api/github/webhooks`);
+    console.log(`GitHub Webhook URL: http://YOUR_DOMAIN/api/github/webhooks`);
   } catch (err) {
     app.log.error(err);
-    console.error("❌ Fatal Startup Error:", err);
+    console.error("❌ Fatal Server Error (Port busy?):", err);
     process.exit(1);
   }
 };
-
 start();
