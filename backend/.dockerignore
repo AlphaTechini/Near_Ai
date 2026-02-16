@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.git
+.gitignore
+build_errors.txt
+README.md
+npm-debug.log
+pnpm-debug.log
