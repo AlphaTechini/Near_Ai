@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
-    "postinstall": "patch-package"
+    "build": "tsc"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -34,5 +33,10 @@
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "chainsig.js@1.1.14": "patches/chainsig.js.patch"
+    }
   }
 }
