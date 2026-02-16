@@ -18,12 +18,18 @@ export interface BountyMetadata {
     action: 'fund_bounty';
 }
 
+interface AssetConfig {
+    chain: string;
+    symbol: string;
+}
+
 interface CreateCheckoutParams {
-    amount: string; // Amount in atomic units (e.g., 6 decimals for USDC)
+    amount: string; // Amount in atomic units
+    asset: AssetConfig;
     metadata: BountyMetadata;
     successUrl?: string;
     cancelUrl?: string;
-    receiverAddress?: string; // Where funds should land (MPC Wallet)
+    receiverAddress?: string; // Where funds should land
 }
 
 export const pingPayService = {
@@ -35,11 +41,11 @@ export const pingPayService = {
             const payload = {
                 amount: params.amount,
                 asset: {
-                    chain: "NEAR",
-                    symbol: "USDC",
-                    receiver: params.receiverAddress // PingPay supported field? Assuming yes for custom checkout
+                    chain: params.asset.chain,
+                    symbol: params.asset.symbol,
+                    receiver: params.receiverAddress
                 },
-                successUrl: params.successUrl || "https://github.com", // Should redirect back to issue or a thank you page
+                successUrl: params.successUrl || "https://github.com",
                 cancelUrl: params.cancelUrl || "https://github.com",
                 metadata: {
                     ...params.metadata,

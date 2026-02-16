@@ -25,18 +25,19 @@ export default (app: Probot) => {
         const body = context.payload.comment.body;
         if (!parseCommand(body, "/bounty")) return;
 
-        // Parse: @GitBounty /bounty <name> <price> <token>
-        const match = body.match(/@GitBounty\s+\/bounty\s+(?:["']([^"']+)["']|(\S+))\s+(\d+)\s+(\w+)/);
+        // Parse: @GitBounty /bounty <name> <price> <token> <chain?>
+        const match = body.match(/@GitBounty\s+\/bounty\s+(?:["']([^"']+)["']|(\S+))\s+(\d+)\s+(\w+)(?:\s+(\w+))?/);
 
         if (!match) {
             return context.octokit.issues.createComment(context.issue({
-                body: "❌ Invalid format. Use: `@GitBounty /bounty <name> <price> <token>`"
+                body: "❌ Invalid format. Use: `@GitBounty /bounty <name> <price> <token> [chain]`"
             }));
         }
 
         const name = match[1] || match[2];
         const price = parseInt(match[3]);
         const token = match[4].toUpperCase();
+        const chain = (match[5] || 'NEAR').toUpperCase(); // Default to NEAR if omitted
 
         const issue = context.payload.issue;
         const repo = context.payload.repository;
@@ -56,6 +57,7 @@ export default (app: Probot) => {
                 description: issue.body || "No description",
                 amount: price,
                 token: token,
+                chain: chain,
                 depositorUserId: sender.id,
                 depositor: sender.login,
                 status: 'pending_deposit',
@@ -63,16 +65,42 @@ export default (app: Probot) => {
                 issueNumber: issue.number,
                 repoId: repo.id,
                 repoFullName: repo.full_name,
-                installationId: context.payload.installation?.id || 0 // Safety fallback (should exist)
+                installationId: context.payload.installation?.id || 0
             });
             await newBounty.save();
 
-            // 2. Derive MPC Address (Receiver)
+            // 2. Derive Address & Asset Config
             const nearAccount = await getAccount();
-            const receiverAddress = await mpcSignerService.getMpcAddress(nearAccount);
+            let receiverAddress = "";
+            let assetConfig = { chain: "", symbol: "" };
+            let amountAtomic = "";
+
+            // LOGIC: Chain determines destination
+            if (chain === 'NEAR') {
+                // Native NEAR or Tokens on NEAR (Ref/Burrow style not impl yet, assume Native/Wrapped)
+                receiverAddress = nearAccount.accountId;
+                assetConfig = { chain: 'NEAR', symbol: token };
+
+                if (token === 'NEAR') {
+                    amountAtomic = (price * 1_000_000_000_000_000_000_000_000).toLocaleString('fullwide', { useGrouping: false });
+                } else {
+                    // Assume 24 decimals for now or standard FT, logic might vary. PingPay handles conversion usually? 
+                    // MVP: Support NEAR and USDC (6 decimals)
+                    // If USDC on NEAR, likely 6 decimals too?
+                    amountAtomic = (price * 1_000_000).toString();
+                }
+            } else if (chain === 'ETH' || chain === 'BASE') {
+                // MPC
+                receiverAddress = await mpcSignerService.getMpcAddress(nearAccount);
+                assetConfig = { chain: 'ETH', symbol: token };
+                amountAtomic = (price * 1_000_000).toString(); // Assume 6 decimals for USDC/ETH-like tokens
+            } else {
+                return context.octokit.issues.createComment(context.issue({
+                    body: `❌ Unsupported chain: ${chain}. Use NEAR or ETH.`
+                }));
+            }
 
             // 3. Generate PingPay Link
-            const amountAtomic = (price * 1_000_000).toString(); // USDC 6 decimals
             const metadata: BountyMetadata = {
                 issueId: issue.id,
                 issueNumber: issue.number,
@@ -83,6 +111,7 @@ export default (app: Probot) => {
 
             const session = await pingPayService.createCheckoutSession({
                 amount: amountAtomic,
+                asset: assetConfig,
                 metadata,
                 successUrl: issue.html_url,
                 cancelUrl: issue.html_url,

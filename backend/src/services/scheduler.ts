@@ -53,12 +53,13 @@ async function processPayouts(app: Probot) {
                     continue;
                 }
 
-                console.log(`Processing payout for ${bounty._id} to ${bounty.hunterAddress} (${bounty.amount} ${bounty.token})`);
+                console.log(`Processing payout for ${bounty._id} to ${bounty.hunterAddress} (${bounty.amount} ${bounty.token} on ${bounty.chain})`);
 
                 // 2. Execute Payout
                 let txHash = "";
 
-                if (bounty.token.toUpperCase() === 'NEAR') {
+                // Logic based on CHAIN, not just Token
+                if (bounty.chain === 'NEAR') {
                     console.log(`Processing NATIVE NEAR payout for ${bounty._id} to ${bounty.hunterAddress}`);
                     // Native NEAR Transfer
                     const amountYocto = utils.format.parseNearAmount(bounty.amount.toString());
@@ -69,7 +70,8 @@ async function processPayouts(app: Probot) {
                     txHash = result.transaction_outcome.id;
 
                 } else {
-                    // MPC / EVM Transfer (USDC, etc.)
+                    // MPC / EVM Transfer (USDC, etc. on Base/ETH)
+                    // We pass the token symbol to MPC service, which handles the contract address mapping
                     txHash = await mpcSignerService.releasePayout(
                         bounty.hunterAddress,
                         bounty.amount.toString(),
@@ -91,14 +93,18 @@ async function processPayouts(app: Probot) {
                     const octokit = await app.auth(bounty.installationId);
                     const [owner, repo] = bounty.repoFullName.split('/');
 
+                    const explorerLink = bounty.chain === 'NEAR'
+                        ? `https://nearblocks.io/txns/${txHash}`
+                        : `https://sepolia.basescan.org/tx/${txHash}`;
+
                     await octokit.issues.createComment({
                         owner,
                         repo,
                         issue_number: bounty.issueNumber,
                         body: `
 ### 💸 Payout Sent!
-Transaction has been broadcast successfully.
-🔗 **Tx Hash**: [View on Explorer](https://nearblocks.io/txns/${txHash}) (or BaseScan for MPC)
+Transaction has been broadcast successfully on **${bounty.chain}**.
+🔗 **Tx Hash**: [View on Explorer](${explorerLink})
 
 cc: @${bounty.hunter} @${bounty.depositor}
                         `

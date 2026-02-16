@@ -6,6 +6,7 @@ export interface IBounty extends Document {
     description: string;
     amount: number;
     token: string;
+    chain: string;
     depositorUserId: number;
     depositor: string;
     status: 'awaiting_details' | 'pending_deposit' | 'active' | 'payout_pending' | 'paid' | 'disputed' | 'manual_approval_needed';
@@ -31,7 +32,8 @@ const BountySchema = new Schema<IBounty>({
     title: { type: String, required: true },
     description: { type: String, required: true },
     amount: { type: Number, required: true },
-    token: { type: String, required: true, default: 'USDC' }, // Default for now
+    token: { type: String, required: true, default: 'USDC' },
+    chain: { type: String, required: true, default: 'NEAR' }, // 'NEAR' or 'ETH' (Base)
     depositorUserId: { type: Number, required: true }, // GitHub ID
     depositor: { type: String, required: true }, // GitHub Username (keep for display)
     status: {
