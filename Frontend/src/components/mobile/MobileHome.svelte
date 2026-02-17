@@ -35,11 +35,13 @@
 				Manage your repository economics on the go. Instant settlements.
 			</p>
 
-			<button
-				class="bg-primary text-background-dark shadow-neon-strong mb-8 w-full rounded-lg py-3 font-bold"
+			<a
+				href="https://github.com/apps/near-gitbounty"
+				target="_blank"
+				class="bg-primary text-background-dark shadow-neon-strong mb-8 block w-full rounded-lg py-3 font-bold"
 			>
 				Install on GitHub
-			</button>
+			</a>
 		</section>
 
 		<!-- Mobile Friction/Features (Simplified) -->

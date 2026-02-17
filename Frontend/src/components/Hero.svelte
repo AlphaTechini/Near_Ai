@@ -27,7 +27,7 @@
 			</p>
 
 			<div class="hero-actions">
-				<a href="https://github.com/apps/gitpay-agent" target="_blank" class="btn-install">
+				<a href="https://github.com/apps/near-gitbounty" target="_blank" class="btn-install">
 					<svg aria-hidden="true" class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
 						<path
 							clip-rule="evenodd"
@@ -86,7 +86,7 @@
 								<span class="comment-time">2 min ago</span>
 							</div>
 							<div class="comment-body-text">
-								<code>@gitpay /claim</code>
+								<code>@GitBounty /claim</code>
 							</div>
 						</div>
 					</div>
@@ -98,7 +98,7 @@
 						</div>
 						<div class="comment-content">
 							<div class="comment-header">
-								<span class="comment-author">GitPay Bot</span>
+								<span class="comment-author">GitBounty Bot</span>
 								<span class="bot-badge">BOT</span>
 								<span class="comment-time">Just now</span>
 							</div>
@@ -126,7 +126,7 @@
 
 				<!-- Footer typing indicator -->
 				<div class="terminal-footer">
-					<span class="typing-text">*** GitPay Bot is verifying pull request</span>
+					<span class="typing-text">*** GitBounty Bot is verifying pull request</span>
 					<span class="typing-dots">...</span>
 				</div>
 			</div>

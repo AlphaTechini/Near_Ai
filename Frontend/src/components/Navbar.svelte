@@ -11,8 +11,8 @@
 <nav class="navbar">
 	<div class="navbar-container">
 		<a href="/" class="navbar-logo">
-			<img src="/gitpay_logo.png" alt="GitPay Bot Logo" class="logo-icon" />
-			<span class="logo-text">GitPay <span class="logo-accent">Bot</span></span>
+			<img src="/gitpay_logo.png" alt="GitBounty Bot Logo" class="logo-icon" />
+			<span class="logo-text">GitBounty <span class="logo-accent">Bot</span></span>
 		</a>
 
 		<div class="navbar-links">

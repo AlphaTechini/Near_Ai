@@ -8,7 +8,7 @@
 				<h2 class="cta-title">Ready to upgrade your workflow?</h2>
 				<p class="cta-desc">Experience the future of automated trading with our bot.</p>
 			</div>
-			<a href="https://github.com/apps/gitpay-agent" target="_blank" class="cta-button">
+			<a href="https://github.com/apps/near-gitbounty" target="_blank" class="cta-button">
 				INSTALL BOT
 				<span class="material-icons" style="font-size: 18px;">bolt</span>
 			</a>

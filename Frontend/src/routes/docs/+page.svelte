@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Documentation | GitPay Agent</title>
+	<title>Documentation | GitBounty Agent</title>
 </svelte:head>
 
 <div class="page">
@@ -28,9 +28,9 @@
 			<!-- Content -->
 			<article class="docs-content">
 				<section id="introduction">
-					<h1>GitPay Agent Documentation</h1>
+					<h1>GitBounty Agent Documentation</h1>
 					<p class="lead">
-						GitPay Agent is a headless AI judge that automates code review and bounty payouts for
+						GitBounty Agent is a headless AI judge that automates code review and bounty payouts for
 						your repository. It lives in your GitHub issues and Pull Requests, ensuring that only
 						verified code gets paid.
 					</p>
@@ -43,8 +43,8 @@
 						<div class="step-content">
 							<h3>Install the GitHub App</h3>
 							<p>
-								Go to the <a href="https://github.com/apps/gitpay-agent" target="_blank"
-									>GitPay Agent App</a
+								Go to the <a href="https://github.com/apps/near-gitbounty" target="_blank"
+									>GitBounty Agent App</a
 								> page and click "Install". Select the repositories you want the agent to manage.
 							</p>
 						</div>
@@ -54,7 +54,7 @@
 						<div class="step-content">
 							<h3>Connect Your Wallet</h3>
 							<p>
-								Log in to the GitPay Dashboard using your NEAR or Ethereum wallet to manage funds
+								Log in to the GitBounty Dashboard using your NEAR or Ethereum wallet to manage funds
 								and view payouts.
 							</p>
 						</div>
@@ -158,10 +158,10 @@
 				<section id="configuration">
 					<h2>Configuration</h2>
 					<p>
-						Create a <code>.gitpayrc</code> file in your repository root to customize the agent's behavior.
+						Create a <code>.gitbountyrc</code> file in your repository root to customize the agent's behavior.
 					</p>
 					<pre class="code-block"><code
-							><!-- .gitpayrc -->
+							><!-- .gitbountyrc -->
 &#123;
   "test_command": "npm test",
   "require_passing_tests": true,
