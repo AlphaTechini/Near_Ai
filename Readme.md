@@ -1,4 +1,4 @@
-# GitPay Bot (NeuraLance Lite)
+# GitBounty Bot
 
 A Headless AI Agent that lives on GitHub, paying developers in crypto for approved code.
 
