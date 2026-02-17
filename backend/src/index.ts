@@ -35,9 +35,12 @@ const app: FastifyInstance = Fastify({
 const start = async () => {
   console.log("🚀 Starting GitPay Backend...");
 
-  // 1. Register Plugins
+  // 1. Register Plugins (Await them!)
   await app.register(cors, { origin: true });
-  await app.register(middie); // Enable Express-style middleware
+  await app.register(middie); 
+  
+  // CRITICAL: Wait for plugins to be ready before using .use()
+  await app.after();
 
   // 2. Initialize Probot
   try {
@@ -46,11 +49,11 @@ const start = async () => {
       probot,
       webhooksPath: '/api/github/webhooks'
     });
-
-    // Mount Probot Middleware via Middie
-    // This ensures it handles the request stream correctly before Fastify consumes it
+    
+    // Mount Probot Middleware via Middie with .use()
+    // This is safe now because we awaited app.after()
     app.use(probotMiddleware);
-
+    
     console.log("✅ Probot middleware mounted successfully via Middie");
   } catch (error) {
     console.error("❌ Failed to initialize Probot:", error);
@@ -64,6 +67,7 @@ const start = async () => {
   // 4. Start Server
   try {
     const port = parseInt(process.env.PORT || '3000');
+    // app.listen also waits for ready, but we double-checked above
     await app.listen({ port, host: '0.0.0.0' });
     console.log(`✅ Server is running on port ${port}`);
     console.log(`GitHub Webhook URL: http://YOUR_DOMAIN/api/github/webhooks`);
@@ -73,7 +77,7 @@ const start = async () => {
     process.exit(1);
   }
 
-  // 5. Database Connection
+  // 5. Database Connection (Non-Blocking)
   try {
     await connectDB();
     console.log("✅ Database Logic initialized");
