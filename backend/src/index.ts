@@ -61,30 +61,16 @@ try {
 // Fastify doesn't natively support Express/Node middleware easily without a plugin or wrapper
 // But for MVP, we can just route the specific path to it
 // Fastify route to handle GitHub Webhooks
-app.post('/api/github/webhooks', async (req, reply) => {
+app.post('/api/github/webhooks', (req, reply) => {
   app.log.info("🔔 Webhook received at /api/github/webhooks");
   if (probotMiddleware) {
-    // We must wrap the middleware call in a promise to ensure Fastify waits for it
-    await new Promise<void>((resolve, reject) => {
-      // Probot's middleware handles the response (res.end()), so we don't need to return anything here
-      // But we need to know when it's done.
-      // Since `createNodeMiddleware` returns a simplified (req, res) => void, it doesn't return a promise by default in older versions,
-      // but it handles the response stream directly. 
-      // The issue is Fastify might close the connection if we don't await or return reply.hijack()
-
-      // Critical fix: Using run(req, res) if possible, or just invoking it.
-      // However, the best way in Fastify is:
-      probotMiddleware(req.raw, reply.raw);
-      resolve();
-    });
-
-    // Tell Fastify we handled the response properly via the raw response
-    // reply.hijack(); // Not strictly needed if we just let Probot handle writing to `res`
-    // But to be safe and avoid "Reply already sent" errors or timeouts:
-    return reply;
+    // We hijack the response to let Probot's middleware handle the stream directly
+    // This prevents Fastify from waiting for a return value or closing the stream prematurely
+    reply.hijack();
+    probotMiddleware(req.raw, reply.raw);
   } else {
     app.log.error("❌ Probot middleware not initialized");
-    return reply.status(500).send("Probot not initialized");
+    reply.status(500).send("Probot not initialized");
   }
 });
 
