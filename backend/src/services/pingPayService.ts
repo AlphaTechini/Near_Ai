@@ -8,6 +8,14 @@ const PINGPAY_API_KEY = process.env.PINGPAY_API_KEY;
 
 if (!PINGPAY_API_KEY) {
     console.warn('PINGPAY_API_KEY is not set. Payments will fail.');
+} else {
+    // Debug logging to verify key format
+    const maskedKey = `${PINGPAY_API_KEY.substring(0, 12)}...`;
+    console.log(`[PingPay Config] API Key Loaded: '${maskedKey}' (Length: ${PINGPAY_API_KEY.length})`);
+
+    if (!PINGPAY_API_KEY.startsWith('pk_test_') && process.env.NODE_ENV !== 'production') {
+        console.warn('⚠️ PINGPAY_API_KEY should likely start with "pk_test_" for testnet/sandbox.');
+    }
 }
 
 export interface BountyMetadata {
@@ -55,7 +63,7 @@ export const pingPayService = {
 
             const response = await axios.post(`${PINGPAY_API_URL}/checkout/sessions`, payload, {
                 headers: {
-                    'x-publishable-key': PINGPAY_API_KEY,
+                    'x-api-key': PINGPAY_API_KEY, // Changed from x-publishable-key per create session docs
                     'Content-Type': 'application/json'
                 }
             });

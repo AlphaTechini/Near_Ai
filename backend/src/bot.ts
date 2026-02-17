@@ -79,25 +79,8 @@ export default (app: Probot) => {
                 return quietReply(context, `⚠️ A bounty is already active on this issue (Status: ${existingBounty.status}).`);
             }
 
-            // Create DB Entry
-            app.log.info("💾 Saving new bounty to DB...");
-            const newBounty = new Bounty({
-                title: issue.title,
-                description: issue.body || "No description",
-                amount: price,
-                token: token,
-                chain: chain,
-                depositorUserId: sender.id,
-                depositor: sender.login,
-                status: 'pending_deposit',
-                issueId: issue.id,
-                issueNumber: issue.number,
-                repoId: repository.id,
-                repoFullName: repository.full_name,
-                installationId: context.payload.installation?.id || 0
-            });
-            await newBounty.save();
-            app.log.info("✅ Bounty saved to DB.");
+            // 2. Create Payment Link via PingPay
+            app.log.info(`💳 Generating PingPay Session for ${price} ${token}...`);
 
             // Derive Address
             app.log.info("🔐 Loading NEAR Account & Deriving Addresses...");
@@ -124,29 +107,58 @@ export default (app: Probot) => {
             }
 
             // Generate Link
-            app.log.info("💳 Generating PingPay Session...");
-            const metadata: BountyMetadata = {
+            // 2. Create Payment Link via PingPay
+            app.log.info(`💳 Generating PingPay Session for ${price} ${token}...`);
+            let session: any;
+            try {
+                const metadata: BountyMetadata = {
+                    issueId: issue.id,
+                    issueNumber: issue.number,
+                    repoFullName: repository.full_name,
+                    bountyAmount: price.toString(),
+                    action: 'fund_bounty'
+                };
+
+                session = await pingPayService.createCheckoutSession({
+                    amount: amountAtomic,
+                    asset: assetConfig,
+                    metadata,
+                    successUrl: issue.html_url,
+                    cancelUrl: issue.html_url,
+                    receiverAddress
+                });
+                app.log.info(`✅ Session Created: ${session.sessionUrl}`);
+            } catch (pingPayError: any) {
+                app.log.error(`PingPay Session Creation Failed: ${pingPayError.message}`);
+                await quietReply(context, `❌ **Payment Link Generation Failed**: ${pingPayError.message}. Please try again later or check the API key configuration.`);
+                return; // Exit without creating DB record
+            }
+
+            // 3. Create Bounty Record in DB (Only if link generation succeeded)
+            app.log.info("💾 Saving new bounty to DB...");
+            const newBounty = new Bounty({
+                title: issue.title,
+                description: issue.body || "No description",
+                amount: price,
+                token: token,
+                chain: chain,
+                depositorUserId: sender.id,
+                depositor: sender.login,
+                status: 'pending_deposit',
                 issueId: issue.id,
                 issueNumber: issue.number,
+                repoId: repository.id,
                 repoFullName: repository.full_name,
-                bountyAmount: price.toString(),
-                action: 'fund_bounty'
-            };
-
-            const session = await pingPayService.createCheckoutSession({
-                amount: amountAtomic,
-                asset: assetConfig,
-                metadata,
-                successUrl: issue.html_url,
-                cancelUrl: issue.html_url,
-                receiverAddress
+                installationId: context.payload.installation?.id || 0,
+                paymentSessionId: session.sessionId
             });
-            app.log.info(`✅ Session Created: ${session.sessionUrl}`);
+            await newBounty.save();
+            app.log.info(`✅ Bounty record created for issue #${issue.number}: ${newBounty._id}`);
 
-            // Reply
+            // 4. Reply with Payment Link
             app.log.info("📨 Posting reply to GitHub...");
             await context.octokit.issues.createComment(context.issue({
-                body: T.DEPOSIT_LINK(price, token, session.sessionUrl) + `\n\ncc: @${sender.login}`
+                body: `💰 **Bounty Created!**\n\nClick the link below to deposit **${price} ${token}** and activate this bounty:\n\n👉 [**Pay Now**](${session.sessionUrl})\n\nOnce paid, the bounty will be live!\n\ncc: @${sender.login}`
             }));
             app.log.info("🎉 Command processing complete.");
 
