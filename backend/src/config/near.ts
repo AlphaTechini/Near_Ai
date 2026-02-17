@@ -1,4 +1,5 @@
-import { keyStores, connect, KeyPair, Account } from 'near-api-js';
+import { KeyPair, connect, Account } from 'near-api-js';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores/in_memory_key_store.js';
 
 export interface NearConfig {
     networkId: string;
@@ -42,14 +43,14 @@ export async function getAccount(): Promise<Account> {
         throw new Error('NEAR_ACCOUNT_ID and NEAR_PRIVATE_KEY must be set in environment');
     }
 
-    const keyStore = new keyStores.InMemoryKeyStore();
-    const keyPair = (KeyPair as any).fromString(privateKey);
+    const keyStore = new InMemoryKeyStore();
+    const keyPair = KeyPair.fromString(privateKey as any);
     await keyStore.setKey(config.networkId, accountId, keyPair as any);
 
     const near = await connect({
         networkId: config.networkId,
         nodeUrl: config.nodeUrl,
-        keyStore: keyStore,
+        keyStore: keyStore as any,
         headers: {}
     });
 

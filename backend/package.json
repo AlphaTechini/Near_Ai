@@ -24,15 +24,7 @@
     "node-schedule": "^2.1.1",
     "openai": "^6.18.0",
     "probot": "^13.0.1",
-    "viem": "^2.45.3",
-    "@near-js/accounts": "^1.0.4",
-    "@near-js/crypto": "^1.2.4",
-    "@near-js/keystores": "^0.0.12",
-    "@near-js/providers": "^0.1.1",
-    "@near-js/transactions": "^1.1.2",
-    "@near-js/types": "^0.0.4",
-    "@near-js/utils": "^0.0.4",
-    "@near-js/wallet-account": "^1.1.1"
+    "viem": "^2.45.3"
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",
