@@ -43,9 +43,23 @@ export async function getAccount(): Promise<Account> {
         throw new Error('NEAR_ACCOUNT_ID and NEAR_PRIVATE_KEY must be set in environment');
     }
 
+    let privateKeyString = privateKey.trim();
+    // Auto-fix if user pasted raw key without prefix
+    if (!privateKeyString.startsWith('ed25519:')) {
+        console.warn("⚠️ NEAR_PRIVATE_KEY missing 'ed25519:' prefix. Auto-fixing...");
+        privateKeyString = `ed25519:${privateKeyString}`;
+    }
+
     const keyStore = new InMemoryKeyStore();
-    const keyPair = KeyPair.fromString(privateKey as any);
-    await keyStore.setKey(config.networkId, accountId, keyPair as any);
+    try {
+        const keyPair = KeyPair.fromString(privateKeyString as any);
+        await keyStore.setKey(config.networkId, accountId, keyPair);
+    } catch (error: any) {
+        // Safe logging to debug format issues
+        console.error(`❌ Failed to parse NEAR_PRIVATE_KEY. Value starts with: '${privateKeyString.substring(0, 8)}...' (Length: ${privateKeyString.length})`);
+        console.error(`📝 Ensure it is a valid base58 string.`);
+        throw error;
+    }
 
     const near = await connect({
         networkId: config.networkId,

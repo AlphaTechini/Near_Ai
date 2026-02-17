@@ -153,21 +153,149 @@ export default (app: Probot) => {
         } catch (error: any) {
             app.log.error(error);
             app.log.error(`🔥 FATAL ERROR in /bounty: ${error.message}`);
-            await quietReply(context, `❌ **System Error**: ${error.message}`);
+            // Sanitize response to avoid leaking keys or internal paths
+            await quietReply(context, `❌ **System Error**: An internal error occurred while processing your request. Please check the logs or contact the administrator.`);
         }
     }
 
     async function handleClaimCommand(context: Context<"issue_comment.created">, app: Probot) {
-        // ... (Logic similar to original, logging added if needed)
-        // For brevity, keeping it simple for now as we debug /bounty first
+        app.log.info("🔹 Processing /claim command...");
+        const { sender, comment, repository } = context.payload;
+        const body = comment.body;
+
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/claim\\s+(\\S+)\\s+(\\d+)\\s+(\\S+)`, 'i');
+        const match = body.match(matchRegex);
+
+        if (!match) {
+            return quietReply(context, `❌ **Invalid Format**\nUse: \`${BOT_MENTION} /claim <transaction_id> <pr_number> <wallet_address>\``);
+        }
+
+        const transactionId = match[1];
+        const prNumber = parseInt(match[2]);
+        const walletAddress = match[3];
+
+        try {
+            // 1. Find Bounty
+            const bounty = await Bounty.findOne({ transactionId });
+            if (!bounty) return quietReply(context, "❌ **Invalid Transaction ID**.");
+
+            // 2. Duplicate Check
+            if (bounty.status === 'payout_pending' || bounty.status === 'paid') {
+                return quietReply(context, "⚠️ This bounty is already processed.");
+            }
+
+            // 3. Verify PR Author
+            const { data: pr } = await context.octokit.pulls.get({
+                owner: repository.owner.login,
+                repo: repository.name,
+                pull_number: prNumber
+            });
+
+            if (pr.user.id !== sender.id) {
+                return quietReply(context, `❌ **Security Check Failed**\nYou can only claim bounties for PRs you authored.`);
+            }
+
+            // 4. AI Verification
+            await context.octokit.issues.createComment(context.issue({
+                body: `🕵️‍♂️ **NeuraLance AI** is reviewing changes by @${sender.login}...`
+            }));
+
+            const { data: diff } = await context.octokit.pulls.get({
+                owner: repository.owner.login,
+                repo: repository.name,
+                pull_number: prNumber,
+                mediaType: { format: "diff" }
+            });
+
+            app.log.info("🤖 Asking AI Judge...");
+            const aiResponse = await aiJudgeService.evaluateStrict(bounty.description, diff as unknown as string);
+            const lines = aiResponse.split('\n');
+            const verdict = lines[0].trim().toUpperCase();
+            const reasoning = lines.slice(1).join('\n').trim();
+
+            if (verdict === 'PASSED') {
+                bounty.claimantUserId = sender.id;
+                bounty.passedPrNumber = prNumber;
+                bounty.hunter = sender.login;
+                bounty.hunterAddress = walletAddress;
+
+                const payoutDate = new Date();
+                payoutDate.setHours(payoutDate.getHours() + 24);
+                bounty.payoutScheduledAt = payoutDate;
+                bounty.status = 'payout_pending';
+                await bounty.save();
+
+                await context.octokit.issues.createComment(context.issue({
+                    body: `### ✅ Verification Passed!\n**AI Analysis**:\n${reasoning}\n\n💰 **Payout**: $${bounty.amount} ${bounty.token}\n📅 **Scheduled**: ${payoutDate.toLocaleString()}\ncc: @${bounty.depositor}`
+                }));
+            } else {
+                await context.octokit.issues.createComment(context.issue({
+                    body: T.CLAIM_REJECTED(reasoning) + `\n\ncc: @${sender.login}`
+                }));
+            }
+        } catch (error: any) {
+            app.log.error(error);
+            await quietReply(context, `❌ **System Error**: An internal error occurred while processing your claim.`);
+        }
     }
 
     async function handleClaimNowCommand(context: Context<"issue_comment.created">, app: Probot) {
-        // ...
+        const { sender, comment } = context.payload;
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/claim-now\\s+(\\S+)`, 'i');
+        const match = comment.body.match(matchRegex);
+        if (!match) return;
+
+        const transactionId = match[1];
+
+        try {
+            const bounty = await Bounty.findOne({ transactionId });
+            if (!bounty) return;
+
+            if (bounty.depositorUserId !== sender.id) {
+                return quietReply(context, "❌ Permission Denied: Only the bounty creator can use `/claim-now`.");
+            }
+
+            if (!bounty.claimantUserId || !bounty.hunterAddress) {
+                return quietReply(context, "❌ No verified claim found yet.");
+            }
+
+            bounty.payoutScheduledAt = new Date();
+            bounty.status = 'payout_pending';
+            await bounty.save();
+
+            await context.octokit.issues.createComment(context.issue({
+                body: `### 🛡️ Claim Authorized by Creator\n@${sender.login} manually authorized payout for @${bounty.hunter}.`
+            }));
+        } catch (error: any) {
+            app.log.error(error);
+            await quietReply(context, `❌ **System Error**: An internal error occurred.`);
+        }
     }
 
     async function handleStopCommand(context: Context<"issue_comment.created">, app: Probot) {
-        // ...
+        const { sender, issue } = context.payload;
+        try {
+            const bounty = await Bounty.findOne({ issueId: issue.id });
+            if (!bounty) return;
+
+            if (bounty.depositorUserId !== sender.id) {
+                return quietReply(context, "❌ Permission Denied.");
+            }
+
+            if (bounty.status === 'payout_pending') {
+                bounty.status = 'disputed';
+                bounty.payoutScheduledAt = undefined;
+                await bounty.save();
+                await context.octokit.issues.createComment(context.issue({
+                    body: T.PAYOUT_STOPPED()
+                }));
+            } else {
+                await quietReply(context, "⚠️ No pending payout to stop.");
+            }
+        } catch (error: any) {
+            app.log.error(error);
+            await quietReply(context, `❌ **System Error**: An internal error occurred.`);
+        }
     }
 
     // Wrapper to safely reply without crashing if GitHub is down
