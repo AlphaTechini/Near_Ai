@@ -77,13 +77,19 @@
 
 		<!-- Bottom Bar -->
 		<div class="footer-bottom">
-			<span class="footer-copyright">
-				© {currentYear} CYBERNET SYSTEMS. ALL RIGHTS RESERVED. [SYSTEM_CLOCK: STABLE]
-			</span>
-			<div class="footer-status">
-				<span class="status-dot"></span>
-				ALL SYSTEMS NOMINAL
-				<span class="latency">LATENCY: 12ms</span>
+			<div class="gas-warning">
+				⚠️ <strong>IMPORTANT SYSTEM NOTE:</strong> Gas limits reached. Payments will not settle on-chain,
+				but valid payment links are generated for demonstration.
+			</div>
+			<div class="footer-meta">
+				<span class="footer-copyright">
+					© {currentYear} CYBERNET SYSTEMS. ALL RIGHTS RESERVED. [SYSTEM_CLOCK: STABLE]
+				</span>
+				<div class="footer-status">
+					<span class="status-dot"></span>
+					ALL SYSTEMS NOMINAL
+					<span class="latency">LATENCY: 12ms</span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -240,14 +246,40 @@
 	/* Bottom Bar */
 	.footer-bottom {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		justify-content: space-between;
 		padding: 1.25rem 0;
+		gap: 1.5rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.04);
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.5625rem;
 		letter-spacing: 0.05em;
 		color: #475569;
+	}
+
+	.gas-warning {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		background: rgba(239, 68, 68, 0.08);
+		border: 1px solid rgba(239, 68, 68, 0.2);
+		border-radius: 0.5rem;
+		color: #ef4444;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		text-align: center;
+		line-height: 1.5;
+	}
+
+	.gas-warning strong {
+		font-weight: 700;
+		margin-right: 0.5rem;
+	}
+
+	.footer-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
 	}
 
 	.footer-status {

@@ -3,6 +3,7 @@
 	import Hero from '../Hero.svelte';
 	import Friction from '../Friction.svelte';
 	import Pipeline from '../Pipeline.svelte';
+	import Evidence from '../Evidence.svelte';
 	import Features from '../Features.svelte';
 	import CTA from '../CTA.svelte';
 	import Footer from '../Footer.svelte';
@@ -30,6 +31,7 @@
 		<Hero />
 		<Friction />
 		<Pipeline />
+		<Evidence />
 		<Features />
 		<CTA />
 	</div>
