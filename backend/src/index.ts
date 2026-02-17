@@ -1,4 +1,13 @@
 import Fastify, { FastifyInstance } from 'fastify';
+import cors from '@fastify/cors';
+import middie from '@fastify/middie'; // Import middie
+import connectDB from './db.js';
+import dotenv from 'dotenv';
+import { nearAiService } from './services/nearAiService.js';
+import { createNodeMiddleware, createProbot } from "probot";
+import myProbotApp from "./bot.js";
+
+dotenv.config();
 
 // DEBUG: Immediate Log
 console.log("🛑 ENTRY POINT REACHED: index.ts loaded");
@@ -13,16 +22,6 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-import cors from '@fastify/cors';
-import connectDB from './db.js';
-import dotenv from 'dotenv';
-import { nearAiService } from './services/nearAiService.js';
-import { Server, IncomingMessage, ServerResponse } from "http";
-import { createNodeMiddleware, createProbot } from "probot";
-import myProbotApp from "./bot.js";
-
-dotenv.config();
-
 // Initialize NEAR AI
 nearAiService.initialize();
 
@@ -33,58 +32,36 @@ const app: FastifyInstance = Fastify({
   logger: true
 });
 
-app.register(cors, {
-  origin: true
-});
-
-// Register Custom Routes
-// Custom Routes (Legacy - Disabled for Bot-only mode)
-// app.register(intentRoutes);
-// app.register(import('./routes/bounties'), { prefix: '/bounties' });
-// app.register(import('./routes/webhooks'), { prefix: '/webhooks' });
-
-// Probot Middleware for GitHub Webhooks
-// Mounts on /api/github/webhooks by default or we can specify
-let probotMiddleware: any;
-
-try {
-  const probot = createProbot();
-  probotMiddleware = createNodeMiddleware(myProbotApp, {
-    probot,
-    webhooksPath: '/api/github/webhooks'
-  });
-  console.log("✅ Probot initialized successfully");
-} catch (error) {
-  console.error("❌ Failed to initialize Probot (Check APP_ID/PRIVATE_KEY):", error);
-}
-
-// Fastify doesn't natively support Express/Node middleware easily without a plugin or wrapper
-// But for MVP, we can just route the specific path to it
-// Fastify route to handle GitHub Webhooks
-app.post('/api/github/webhooks', (req, reply) => {
-  app.log.info("🔔 Webhook received at /api/github/webhooks");
-  if (probotMiddleware) {
-    // We hijack the response to let Probot's middleware handle the stream directly
-    // This prevents Fastify from waiting for a return value or closing the stream prematurely
-    reply.hijack();
-    probotMiddleware(req.raw, reply.raw);
-  } else {
-    app.log.error("❌ Probot middleware not initialized");
-    reply.status(500).send("Probot not initialized");
-  }
-});
-
-// Database connection - Move inside start for better flow control
-// connectDB().then(() => { ... });
-
-app.get('/health', async (request, reply) => {
-  return { status: 'ok', mode: 'gitpay-lite' };
-});
-
 const start = async () => {
   console.log("🚀 Starting GitPay Backend...");
 
-  // 1. Start Server (FIRST to bind port)
+  // 1. Register Plugins
+  await app.register(cors, { origin: true });
+  await app.register(middie); // Enable Express-style middleware
+
+  // 2. Initialize Probot
+  try {
+    const probot = createProbot();
+    const probotMiddleware = createNodeMiddleware(myProbotApp, {
+      probot,
+      webhooksPath: '/api/github/webhooks'
+    });
+
+    // Mount Probot Middleware via Middie
+    // This ensures it handles the request stream correctly before Fastify consumes it
+    app.use(probotMiddleware);
+
+    console.log("✅ Probot middleware mounted successfully via Middie");
+  } catch (error) {
+    console.error("❌ Failed to initialize Probot:", error);
+  }
+
+  // 3. Health Check
+  app.get('/health', async (request, reply) => {
+    return { status: 'ok', mode: 'gitpay-lite' };
+  });
+
+  // 4. Start Server
   try {
     const port = parseInt(process.env.PORT || '3000');
     await app.listen({ port, host: '0.0.0.0' });
@@ -92,16 +69,17 @@ const start = async () => {
     console.log(`GitHub Webhook URL: http://YOUR_DOMAIN/api/github/webhooks`);
   } catch (err) {
     app.log.error(err);
-    console.error("❌ Fatal Server Error (Port busy?):", err);
+    console.error("❌ Fatal Server Error:", err);
     process.exit(1);
   }
 
-  // 2. Database Connection (Non-Blocking / After Start)
+  // 5. Database Connection
   try {
     await connectDB();
     console.log("✅ Database Logic initialized");
   } catch (dbError: any) {
-    console.warn("⚠️ Database Connection Failed (Server continuing for setup mode):", dbError.message);
+    console.warn("⚠️ Database Connection Failed:", dbError.message);
   }
 };
+
 start();
