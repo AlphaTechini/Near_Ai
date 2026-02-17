@@ -26,6 +26,9 @@ dotenv.config();
 // Initialize NEAR AI
 nearAiService.initialize();
 
+const BOT_NAME = process.env.BOT_MENTION_NAME || "GitBounty";
+console.log(`🤖 Bot Name Configured: @${BOT_NAME}`);
+
 const app: FastifyInstance = Fastify({
   logger: true
 });

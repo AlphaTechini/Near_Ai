@@ -28,7 +28,9 @@
 				<div class="step-code">
 					<code>/bounty 500</code>
 				</div>
-				<p class="step-desc">Developer initiates automation via command line or bot.</p>
+				<p class="step-desc">
+					Developer comments <code>/bounty</code>. Bot generates a <strong>PingPay</strong> deposit link.
+				</p>
 			</div>
 
 			<!-- Step 2 -->
@@ -54,7 +56,9 @@
 					<span class="dot-active"></span>
 					<span class="dot-active"></span>
 				</div>
-				<p class="step-desc">AI Judge reviews code logic and security parameters.</p>
+				<p class="step-desc">
+					<strong>NEAR AI Judge</strong> (DeepSeek-V3) reviews code logic and security.
+				</p>
 			</div>
 
 			<!-- Step 4 -->
@@ -65,7 +69,9 @@
 				</div>
 				<h3 class="step-title step-title-active">The Settlement</h3>
 				<div class="step-mono">TX_HASH: 0x44...9a2</div>
-				<p class="step-desc">MPC Vault executes automated, secure payout to contributor.</p>
+				<p class="step-desc">
+					<strong>NEAR MPC</strong> executes automated, secure payout to contributor on Base/ETH.
+				</p>
 			</div>
 		</div>
 

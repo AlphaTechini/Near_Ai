@@ -8,16 +8,20 @@ import { getAccount } from "./config/near.js";
 import * as T from "./prompt_template.js";
 
 export default (app: Probot) => {
-    app.log.info("GitPay Bot is running!");
+    // defaults to GitBounty if not set
+    const BOT_NAME = process.env.BOT_MENTION_NAME || "GitBounty";
+    const BOT_MENTION = `@${BOT_NAME}`;
+
+    app.log.info(`${BOT_NAME} Bot is running! Listening for: ${BOT_MENTION}`);
 
     // Helper to check for command
     const parseCommand = (body: string, command: string) => {
-        const regex = new RegExp(`@GitBounty\\s+${command}(\\s+|$)`);
+        const regex = new RegExp(`${BOT_MENTION}\\s+${command}(\\s+|$)`, 'i');
         return regex.test(body);
     };
 
     // -------------------------------------------------------------------------
-    // Command Parser: @GitBounty /bounty <name> <price> <token>
+    // Command Parser: @<BotName> /bounty <name> <price> <token>
     // -------------------------------------------------------------------------
     app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         if (context.payload.sender.type === "Bot") return;
@@ -25,12 +29,14 @@ export default (app: Probot) => {
         const body = context.payload.comment.body;
         if (!parseCommand(body, "/bounty")) return;
 
-        // Parse: @GitBounty /bounty <name> <price> <token> <chain?>
-        const match = body.match(/@GitBounty\s+\/bounty\s+(?:["']([^"']+)["']|(\S+))\s+(\d+)\s+(\w+)(?:\s+(\w+))?/);
+        // Parse: @<BotName> /bounty <name> <price> <token> <chain?>
+        // We need a regex that matches the configured bot name
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/bounty\\s+(?:["']([^"']+)["']|(\\S+))\\s+(\\d+)\\s+(\\w+)(?:\\s+(\\w+))?`, 'i');
+        const match = body.match(matchRegex);
 
         if (!match) {
             return context.octokit.issues.createComment(context.issue({
-                body: "❌ Invalid format. Use: `@GitBounty /bounty <name> <price> <token> [chain]`"
+                body: `❌ Invalid format. Use: \`${BOT_MENTION} /bounty <name> <price> <token> [chain]\``
             }));
         }
 
@@ -132,7 +138,7 @@ export default (app: Probot) => {
     });
 
     // -------------------------------------------------------------------------
-    // Command Parser: @GitBounty /claim <transaction_id> <pr_number> <wallet_address>
+    // Command Parser: @<BotName> /claim <transaction_id> <pr_number> <wallet_address>
     // -------------------------------------------------------------------------
     app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         if (context.payload.sender.type === "Bot") return;
@@ -140,13 +146,14 @@ export default (app: Probot) => {
         const body = context.payload.comment.body;
         if (!parseCommand(body, "/claim")) return;
 
-        // Regex: @GitBounty /claim <txId> <prNumber> <walletAddress>
+        // Regex: @<BotName> /claim <txId> <prNumber> <walletAddress>
         // Supports 0x addresses (EVM) or named accounts (NEAR)
-        const match = body.match(/@GitBounty\s+\/claim\s+(\S+)\s+(\d+)\s+(\S+)/);
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/claim\\s+(\\S+)\\s+(\\d+)\\s+(\\S+)`, 'i');
+        const match = body.match(matchRegex);
 
         if (!match) {
             return context.octokit.issues.createComment(context.issue({
-                body: "❌ Invalid format. Use: `@GitBounty /claim <transaction_id> <pr_number> <wallet_address>`"
+                body: `❌ Invalid format. Use: \`${BOT_MENTION} /claim <transaction_id> <pr_number> <wallet_address>\``
             }));
         }
 
@@ -250,7 +257,7 @@ cc: @${bounty.depositor} (Bounty Creator)
     });
 
     // -------------------------------------------------------------------------
-    // Command Parser: @GitBounty /claim-now <transaction_id>
+    // Command Parser: @<BotName> /claim-now <transaction_id>
     // -------------------------------------------------------------------------
     app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         if (context.payload.sender.type === "Bot") return;
@@ -258,7 +265,8 @@ cc: @${bounty.depositor} (Bounty Creator)
         const body = context.payload.comment.body;
         if (!parseCommand(body, "/claim-now")) return;
 
-        const match = body.match(/@GitBounty\s+\/claim-now\s+(\S+)/);
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/claim-now\\s+(\\S+)`, 'i');
+        const match = body.match(matchRegex);
         if (!match) return; // Silent fail if format wrong
 
         const transactionId = match[1];
@@ -300,7 +308,7 @@ cc: @${bounty.depositor} (Bounty Creator)
     });
 
     // -------------------------------------------------------------------------
-    // Command Parser: @GitBounty /stop
+    // Command Parser: @<BotName> /stop
     // -------------------------------------------------------------------------
     app.on("issue_comment.created", async (context: Context<"issue_comment.created">) => {
         if (context.payload.sender.type === "Bot") return;
