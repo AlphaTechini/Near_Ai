@@ -1,5 +1,6 @@
 import { Probot, Context } from "probot";
 import Bounty from "./models/Bounty.js";
+import Fix from "./models/Fix.js";
 import { pingPayService, BountyMetadata } from "./services/pingPayService.js";
 import { aiJudgeService } from "./services/aiJudge.js";
 import { mpcSignerService } from "./services/mpcSigner.js";
@@ -41,6 +42,10 @@ export default (app: Probot) => {
             await handleStopCommand(context, app);
         } else if (parseCommand(comment.body, "/help")) {
             await handleHelpCommand(context, app);
+        } else if (parseCommand(comment.body, "/fix")) {
+            await handleFixCommand(context, app);
+        } else if (parseCommand(comment.body, "/check")) {
+            await handleCheckCommand(context, app);
         }
     });
 
@@ -317,6 +322,121 @@ export default (app: Probot) => {
         await context.octokit.issues.createComment(context.issue({
             body: T.HELP_MESSAGE(BOT_MENTION)
         }));
+    }
+
+    async function handleFixCommand(context: Context<"issue_comment.created">, app: Probot) {
+        app.log.info("🔹 Processing /fix command...");
+        const { sender, comment, issue, repository } = context.payload;
+        const body = comment.body;
+
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/fix\\s+(?:["']([^"']+)["']|(\\S+))`, 'i');
+        const match = body.match(matchRegex);
+
+        if (!match) {
+            return quietReply(context, `❌ **Invalid Format**\nUse: \`${BOT_MENTION} /fix <name>\`\nExample: \`${BOT_MENTION} /fix "Typo fix"\``);
+        }
+
+        const name = match[1] || match[2];
+
+        try {
+            // Check for existing Fix
+            const existingFix = await Fix.findOne({ issueId: issue.id });
+            if (existingFix) {
+                return quietReply(context, `⚠️ A fix is already active on this issue (Status: ${existingFix.status}).`);
+            }
+
+            const newFix = new Fix({
+                title: name,
+                description: issue.body || "No description",
+                depositorUserId: sender.id,
+                depositor: sender.login,
+                status: 'active',
+                issueId: issue.id,
+                issueNumber: issue.number,
+                repoId: repository.id,
+                repoFullName: repository.full_name,
+                installationId: context.payload.installation?.id || 0
+            });
+            await newFix.save();
+
+            await context.octokit.issues.createComment(context.issue({
+                body: `🛠️ **Fix Task Created!**\n\nSubmit a PR and use \`${BOT_MENTION} /check <pr_number>\` to verify your fix.\n\ncc: @${sender.login}`
+            }));
+
+        } catch (error: any) {
+            app.log.error(error);
+            await quietReply(context, `❌ **System Error**: Failed to create fix task.`);
+        }
+    }
+
+    async function handleCheckCommand(context: Context<"issue_comment.created">, app: Probot) {
+        app.log.info("🔹 Processing /check command...");
+        const { sender, comment, repository, issue } = context.payload;
+        const body = comment.body;
+
+        const matchRegex = new RegExp(`${BOT_MENTION}\\s+\\/check\\s+(\\d+)`, 'i');
+        const match = body.match(matchRegex);
+
+        if (!match) {
+            return quietReply(context, `❌ **Invalid Format**\nUse: \`${BOT_MENTION} /check <pr_number>\``);
+        }
+
+        const prNumber = parseInt(match[1]);
+
+        try {
+            const fix = await Fix.findOne({ issueId: issue.id, status: 'active' });
+            if (!fix) {
+                return quietReply(context, "❌ No active fix task found for this issue.");
+            }
+
+            // Verify PR Author
+            const { data: pr } = await context.octokit.pulls.get({
+                owner: repository.owner.login,
+                repo: repository.name,
+                pull_number: prNumber
+            });
+
+            if (pr.user.id !== sender.id) {
+                return quietReply(context, `❌ **Security Check Failed**\nYou can only check PRs you authored.`);
+            }
+
+            // Immediate Response
+            await context.octokit.issues.createComment(context.issue({
+                body: `👀 **AI is viewing your code...**\nYou'll be tagged when the results are ready.`
+            }));
+
+            const { data: diff } = await context.octokit.pulls.get({
+                owner: repository.owner.login,
+                repo: repository.name,
+                pull_number: prNumber,
+                mediaType: { format: "diff" }
+            });
+
+            app.log.info("🤖 Asking AI Judge...");
+            const aiResponse = await aiJudgeService.evaluateStrict(fix.description, diff as unknown as string);
+            const lines = aiResponse.split('\n');
+            const verdict = lines[0].trim().toUpperCase();
+            const reasoning = lines.slice(1).join('\n').trim();
+
+            if (verdict === 'PASSED') {
+                fix.status = 'verified';
+                fix.passedPrNumber = prNumber;
+                fix.hunter = sender.login;
+                await fix.save();
+
+                await context.octokit.issues.createComment(context.issue({
+                    body: `### ✅ Fix Verified!\n**AI Reasoning**:\n${reasoning}\n\nGreat job @${sender.login}! The issue is resolved.\ncc: @${fix.depositor}`
+                }));
+            } else {
+                await context.octokit.issues.createComment(context.issue({
+                    body: `### ❌ Verification Failed\n**Reasoning**:\n${reasoning}\n\ncc: @${sender.login}`
+                }));
+            }
+
+        } catch (error: any) {
+            app.log.error(error);
+            await quietReply(context, `❌ **System Error**: An internal error occurred.`);
+        }
     }
 
     // Wrapper to safely reply without crashing if GitHub is down

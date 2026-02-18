@@ -82,6 +82,14 @@ Here are the available commands:
   - (Creator Only) Stop a pending payout or dispute a claim.
   - **Example:** \`${botMention} /stop\`
 
+- \`/fix <name>\`
+  - Create a non-monetary fix task.
+  - **Example:** \`${botMention} /fix "Typo fix"\`
+
+- \`/check <pr_number>\`
+  - Verify a fix using AI.
+  - **Example:** \`${botMention} /check 123\`
+
 - \`/help\`
   - Show this help message.
 `;
