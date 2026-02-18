@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="navbar-actions">
-			<a href="/signin" class="sign-in-btn">SIGN IN</a>
+			<a href="https://github.com/apps/near-gitbounty" target="_blank" class="sign-in-btn">INSTALL</a>
 		</div>
 	</div>
 </nav>
