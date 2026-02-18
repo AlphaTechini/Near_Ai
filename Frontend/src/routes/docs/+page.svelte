@@ -109,6 +109,21 @@
 					</div>
 
 					<div class="command-card">
+						<code>/fix &lt;name&gt;</code>
+						<p><strong>Usage:</strong> Create a non-monetary fix task for bugs or maintenance.</p>
+						<p class="example">Example: <code>/fix "Correct Typo in README"</code></p>
+					</div>
+
+					<div class="command-card">
+						<code>/check &lt;pr_number&gt;</code>
+						<p><strong>Usage:</strong> Request AI verification for a fix.</p>
+						<p class="example">Example: <code>/check 42</code></p>
+						<p>
+							The AI will verify the fix against the issue description and tag you if successful.
+						</p>
+					</div>
+
+					<div class="command-card">
 						<code>/claim-now &lt;txId&gt;</code>
 						<p>
 							<strong>Usage:</strong> (Admin Only) Manually authorize a payout without AI approval.
