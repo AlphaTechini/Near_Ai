@@ -5,13 +5,13 @@ import { getAccount } from '../config/near.js';
 import { utils, Account } from 'near-api-js';
 import { Probot } from 'probot';
 
-// Run every 10 minutes
+// Run every 2 hours (DISABLED FOR NOW)
 export const startScheduler = (app: Probot) => {
-    schedule.scheduleJob('*/10 * * * *', async () => {
-        console.log('🔄 Scheduler: Checking for due payouts...');
-        await processPayouts(app);
-    });
-    console.log('✅ Payout Scheduler Started (Every 10 mins)');
+    // schedule.scheduleJob('0 */2 * * *', async () => {
+    //     console.log('🔄 Scheduler: Checking for due payouts...');
+    //     await processPayouts(app);
+    // });
+    console.log('✅ Payout Scheduler Disabled (Every 2 hours - Commented Out)');
 };
 
 async function processPayouts(app: Probot) {
