@@ -39,6 +39,8 @@ export default (app: Probot) => {
             await handleClaimNowCommand(context, app);
         } else if (parseCommand(comment.body, "/stop")) {
             await handleStopCommand(context, app);
+        } else if (parseCommand(comment.body, "/help")) {
+            await handleHelpCommand(context, app);
         }
     });
 
@@ -308,6 +310,13 @@ export default (app: Probot) => {
             app.log.error(error);
             await quietReply(context, `❌ **System Error**: An internal error occurred.`);
         }
+    }
+
+    async function handleHelpCommand(context: Context<"issue_comment.created">, app: Probot) {
+        app.log.info("🔹 Processing /help command...");
+        await context.octokit.issues.createComment(context.issue({
+            body: T.HELP_MESSAGE(BOT_MENTION)
+        }));
     }
 
     // Wrapper to safely reply without crashing if GitHub is down

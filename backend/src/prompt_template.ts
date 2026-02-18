@@ -61,3 +61,27 @@ OR
 FAILED
 (Reasoning...)
 `;
+
+export const HELP_MESSAGE = (botMention: string) => `
+### 🤖 GitBounty Help
+Here are the available commands:
+
+- \`/bounty <name> <price> <token> [chain]\`
+  - Creates a new bounty on the issue.
+  - **Example:** \`${botMention} /bounty "Fix UI" 100 USDC NEAR\`
+
+- \`/claim <transaction_id> <pr_number> <wallet_address>\`
+  - Submit a claim for a bounty.
+  - **Example:** \`${botMention} /claim 5f3e... 123 0x123...\`
+
+- \`/claim-now <transaction_id>\`
+  - (Creator Only) Manually authorize a payout.
+  - **Example:** \`${botMention} /claim-now 5f3e...\`
+
+- \`/stop\`
+  - (Creator Only) Stop a pending payout or dispute a claim.
+  - **Example:** \`${botMention} /stop\`
+
+- \`/help\`
+  - Show this help message.
+`;
