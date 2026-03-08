@@ -1,4 +1,6 @@
 <script lang="ts">
+	import evidenceIssue from '../assets/evidence-issue.png';
+	import evidencePr from '../assets/evidence-pr.png';
 </script>
 
 <section class="evidence-section" id="evidence">
@@ -12,16 +14,12 @@
 			<p class="section-desc">Real-time execution logs and settlements captured on-chain.</p>
 		</div>
 
-		<div class="video-container">
-			<div class="video-wrapper">
-				<iframe
-					src="https://www.youtube.com/embed/O7o6fINAeTA?si=Ks1oMMA9uOhH3i8q"
-					title="Verified Workflow Demo"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-					referrerpolicy="strict-origin-when-cross-origin"
-					allowfullscreen
-				></iframe>
+		<div class="images-container">
+			<div class="image-wrapper">
+				<img src={evidenceIssue} alt="Evidence of issue creation and bot interaction" />
+			</div>
+			<div class="image-wrapper">
+				<img src={evidencePr} alt="Evidence of PR verification and resolution" />
 			</div>
 		</div>
 	</div>
@@ -85,38 +83,42 @@
 		margin: 0 auto;
 	}
 
-	/* Video Styles */
-	.video-container {
-		max-width: 800px;
+	/* Images Styles */
+	.images-container {
+		max-width: 1000px;
 		margin: 0 auto;
+		display: flex;
+		gap: 2rem;
+		justify-content: center;
+		align-items: flex-start;
+	}
+
+	.image-wrapper {
+		flex: 1 1 50%;
 		border: 1px solid rgba(168, 85, 247, 0.2);
 		border-radius: 1rem;
 		padding: 0.5rem;
 		background: rgba(168, 85, 247, 0.05);
 		box-shadow: 0 0 30px rgba(168, 85, 247, 0.1);
-	}
-
-	.video-wrapper {
-		position: relative;
-		padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-		height: 0;
 		overflow: hidden;
-		border-radius: 0.75rem;
-		background: #000;
 	}
 
-	.video-wrapper iframe {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.image-wrapper img {
 		width: 100%;
-		height: 100%;
-		border: 0;
+		height: auto;
+		display: block;
+		border-radius: 0.75rem;
 	}
 
 	@media (max-width: 768px) {
-		.video-container {
+		.images-container {
+			flex-direction: column;
+			gap: 1.5rem;
+		}
+
+		.image-wrapper {
 			width: 100%;
+			flex: 1 1 100%;
 		}
 	}
 </style>
